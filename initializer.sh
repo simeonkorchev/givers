@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 readonly CONFIG_FILE=".env"
-readonly SPRING_CONF_FILE="backend/src/main/resources/application.properties.2"
+readonly SPRING_CONF_FILE="backend/src/main/resources/application.properties"
 
 configure_properties() {
 	local db_user

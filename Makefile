@@ -1,2 +1,2 @@
 init:
-	initializer.sh
+	./initializer.sh
