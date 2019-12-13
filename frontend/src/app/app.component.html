@@ -1,0 +1,19 @@
+
+<!-- Slide Menu-->
+  
+  <div class="root__container" >
+      <!-- Main Content -->
+  
+      <!--<router-outlet></router-outlet>-->
+      <main class="main__container">
+          <div class="main-container__bg" [ngClass]="{'main-container__bg-dark': darkModeActive}"></div>
+          <alert></alert>
+          <router-outlet></router-outlet>
+      </main>
+  
+      <!-- Footer -->
+  
+      <!-- <footer class="main__footer">
+          <small class="copyright__text">Copyright © 2019 Givers</small>
+      </footer> -->
+  </div>

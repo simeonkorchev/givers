@@ -1,0 +1,65 @@
+version: '3'
+services: 
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend/:/usr/src/app/
+      - /usr/src/app/node_modules
+    environment:
+      - MONGO_USER=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_DB=${MONGO_INITDB_DATABASE}
+      - MONGO_HOST=${MONGO_HOST}
+      - PORT=${RECOMMENDER_PORT}
+      - MONGO_PORT=${MONGO_PORT}
+    depends_on:
+      - backend
+    ports:
+      - ${FRONTEND_PORT}:${FRONTEND_PORT}
+ 
+  backend:
+    build: ./backend
+    working_dir: /usr/src/app
+    volumes:
+      - ./backend/:/usr/src/app
+      #- /usr/src/app/target
+    environment:
+      - MONGO_USER=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_DB=${MONGO_INITDB_DATABASE}
+      - MONGO_HOST=${MONGO_HOST}
+      - PORT=${BACKEND_PORT}
+      - MONGO_PORT=${MONGO_PORT}
+    command: mvn clean spring-boot:run -DskipTests
+    depends_on:
+      - database
+    ports:
+      - ${BACKEND_PORT}:${BACKEND_PORT}
+
+  recommender:
+    build: ./recommender
+    volumes:
+      - ./recommender/:/code
+    depends_on:
+      - database
+    ports:
+      - ${RECOMMENDER_PORT}:${RECOMMENDER_PORT}
+    environment:
+      - MONGO_USER=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_DB=${MONGO_INITDB_DATABASE}
+      - MONGO_HOST=${MONGO_HOST}
+      - PORT=${RECOMMENDER_PORT}
+      - MONGO_PORT=${MONGO_PORT}
+
+  database:
+    image: 'mongo'
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - /tmp/mongo-volume:/data/db
+    ports:
+      - ${MONGO_PORTS}

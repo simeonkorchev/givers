@@ -1,0 +1,4 @@
+1. Add REST resource for Comments
+2. Test all the changes
+3. Research on how to add an https access
+4. Fix compilation errors due to the Roles and IsEnabled in User entity

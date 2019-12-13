@@ -1,0 +1,27 @@
+<div class="container">
+        <section id="main-section">
+          <div class="container">
+              <li class="prod-teaser">
+                <div class="prod-teaser-content">
+                  <img [src]="getImage(cause?.photoPath)" width="270" height="246"/>
+                  <h6 class="prod-teaser-content-title">Name: {{ cause?.name }}</h6>
+                  <h6 class="prod-teaser-content-title">Description: {{ cause?.description }}</h6>
+                  <h6 class="prod-teaser-content-title">Date: {{ cause?.time }}</h6>
+                  <h6 class="prod-teaser-content-title">Location: {{ cause?.location }}</h6>
+                  <div>
+                      <button type="button" class="btn colors-btn" (click)="attendToCause()"> <fa-icon icon="hand-holding-heart"></fa-icon> Attend </button>
+                  </div>
+                  <div>
+                      <ol>
+                          <span *ngFor="let comment of alreadyMadeComments">
+                            <tr> {{ comment.content }}</tr>
+                          </span>
+                          <input class="comment-input" type="text" [(ngModel)]="comment" placeholder="Add Comment..."/>
+                          <button class="btn" (click)="addComment()">Comment</button>
+                      </ol>
+                  </div>
+                </div>
+              </li>
+          </div>
+        </section>
+      </div>

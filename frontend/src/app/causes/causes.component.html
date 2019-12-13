@@ -1,0 +1,49 @@
+<!-- <h1 style="margin: 0">Causes</h1> -->
+<!--Navbar-->
+
+<body>
+  <header>
+    <div class="container">
+      <div id="branding">
+        <h1><span class="highlight">Givers</span></h1>
+      </div>
+      <nav>
+        <ul>
+          <li><button type="button" [routerLink]="['/cause']">
+              <fa-icon icon="plus-circle"></fa-icon> New
+            </button></li>
+          <li><button type="button" [routerLink]="['/user']">
+              <fa-icon icon="users-cog"></fa-icon> Profile
+            </button></li>
+          <li><button (click)="logout()" [routerLink]="['/login']">
+              <fa-icon icon="power-off"></fa-icon> Logout
+            </button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <!--/.Navbar-->
+  <div class="container">
+    <section id="main-section">
+      <div class="container">
+        <span *ngFor="let entry of entries">
+          <li class="prod-teaser">
+            <div class="prod-teaser-content">
+              <img [src]="getImage(entry.photoPath)" width="270" height="246"/>
+              <h6 class="prod-teaser-content-title">Name: {{ entry.name }}</h6>
+              <h6 class="prod-teaser-content-title">Date: {{ entry.time }}</h6>
+              <h6 class="prod-teaser-content-title">Location: {{ entry.location }}</h6>
+              <h6 class="prod-teaser-content-title">Attendance: {{ entry.participantIds?.length }}</h6>
+              <div>
+                  <button type="button" class="btn colors-btn" (click)="attendToCause(entry)"> <fa-icon icon="hand-holding-heart"></fa-icon> Attend </button>
+              </div>
+              <div>
+                <button type="button" class="btn colors-btn" (click)="goToCommentDetails(entry)"> See more </button>
+              </div>
+            </div>
+          </li>
+        </span>
+      </div>
+    </section>
+  </div>
+</body>
