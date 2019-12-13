@@ -3,4 +3,4 @@ COPY . /code/
 WORKDIR /code
 RUN pip install --no-cache-dir -r requirements.txt
 
-ENTRYPOINT python run.py
+ENTRYPOINT python -u run.py

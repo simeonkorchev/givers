@@ -8,6 +8,7 @@ from sklearn.preprocessing import MinMaxScaler
 from flask import Flask
 import json
 from flask import request, Response
+import os
 
 app = Flask(__name__)
 
@@ -27,7 +28,10 @@ grouped_df = []
 user_to_cat_code = []
 
 def train_model():
-  df = read_mongo("test", "log", host='127.0.0.1')
+  df = read_mongo(os.getenv('MONGO_DB'), "log", host=os.getenv('MONGO_HOST'), port=os.getenv('MONGO_PORT'), username=os.getenv('MONGO_USERNAME'), password=os.getenv('MONGO_PASSWORD'))
+  isempty = df.empty
+  if isempty: 
+    return
   df['eventStrength'] = df['eventType'].apply(lambda x: 
   event_type_strength[x])
   global grouped_df
@@ -59,8 +63,6 @@ def train_model():
 
 def _connect_mongo(host, port, username, password, db):
     """ A util for making a connection to mongo """
-    print(host)
-    print(port)
     if username and password:
         mongo_uri = 'mongodb://%s:%s@%s:%s/%s' % (username, password, host, port, db)
         conn = MongoClient(mongo_uri)
@@ -72,8 +74,9 @@ def read_mongo(db, collection, query={}, host='localhost', port=27017, username=
     """ Read from Mongo and Store into DataFrame """
   
     # Connect to MongoDB
+    print("Connecting to MongoDB")
     db = _connect_mongo(host=host, port=port, username=username, password=password, db=db)
-    print(db)
+
     # Make a query to the specific DB and Collection
     cursor = db[collection].find(query)
 
@@ -91,19 +94,12 @@ def read_mongo(db, collection, query={}, host='localhost', port=27017, username=
         del df['created']
     return df
 
-    if username and password:
-        mongo_uri = 'mongodb://%s:%s@%s:%s/%s' % (username, password, host, port, db)
-        conn = MongoClient(mongo_uri)
-    else:
-        conn = MongoClient(host, port)
-    return conn[db]
-
 @app.route('/api/v1/recommend/<username>', methods=['GET'])
 def make_recommendation(username):
   if not username in user_to_cat_code:
       response = Response (
           mimetype="application/json",
-          response=json.dumps(bytes("Unexpected username")),
+          response=json.dumps("Unexpected username"),
           status=404
       )
       return response
@@ -111,7 +107,7 @@ def make_recommendation(username):
   if count <= 0:
       return Response (
           mimetype="application/json",
-          response=json.dumps(bytes("Invalid value for count. It should be a positive number")),
+          response=json.dumps("Invalid value for count. It should be a positive number"),
           status=404
       )
   result = recommend(user_to_cat_code[username], count)
@@ -124,41 +120,43 @@ def make_recommendation(username):
   return response
 
 def recommend(person_id, num_contents=3):
-    # Get the interactions scores from the sparse person content matrix
-    person_interactions = sparse_person_content[person_id,:].toarray()
-    # Add 1 to everything, so that articles with no interaction yet become equal to 1
-    person_interactions = person_interactions.reshape(-1) + 1
-    # Make articles already interacted zero
-    person_interactions[person_interactions > 1] = 0
-    # Get dot product of person vector and all content vectors
-    rec_vector = person_vecs[person_id,:].dot(content_vecs.T).toarray()
+  if sparse_content_person.empty:
+    return
+  # Get the interactions scores from the sparse person content matrix
+  person_interactions = sparse_person_content[person_id,:].toarray()
+  # Add 1 to everything, so that articles with no interaction yet become equal to 1
+  person_interactions = person_interactions.reshape(-1) + 1
+  # Make articles already interacted zero
+  person_interactions[person_interactions > 1] = 0
+  # Get dot product of person vector and all content vectors
+  rec_vector = person_vecs[person_id,:].dot(content_vecs.T).toarray()
 
-    # Scale this recommendation vector between 0 and 1
-    min_max = MinMaxScaler()
-    rec_vector_scaled = min_max.fit_transform(rec_vector.reshape(-1,1))[:,0]
-    # Content already interacted have their recommendation multiplied by zero
-    recommend_vector = person_interactions * rec_vector_scaled
-    # Sort the indices of the content into order of best recommendations
-    content_idx = np.argsort(recommend_vector)[::-1][:num_contents]
+  # Scale this recommendation vector between 0 and 1
+  min_max = MinMaxScaler()
+  rec_vector_scaled = min_max.fit_transform(rec_vector.reshape(-1,1))[:,0]
+  # Content already interacted have their recommendation multiplied by zero
+  recommend_vector = person_interactions * rec_vector_scaled
+  # Sort the indices of the content into order of best recommendations
+  content_idx = np.argsort(recommend_vector)[::-1][:num_contents]
 
-    # Start empty list to store titles and scores
-    usernames = []
-    scores = []
-    names = []
+  # Start empty list to store titles and scores
+  usernames = []
+  scores = []
+  names = []
 
-    for idx in content_idx:
-        # Append titles and scores to the list
-        # names.append(grouped_df.causeName.loc[grouped_df.causeId == idx].iloc[0])
-        names.append(grouped_df.causeName.loc[grouped_df.causeId == idx].iloc[0])
-        usernames.append(cat_code_to_user[grouped_df.username.loc[grouped_df.causeId == idx].iloc[0]])
-        scores.append(recommend_vector[idx])
+  for idx in content_idx:
+      # Append titles and scores to the list
+      # names.append(grouped_df.causeName.loc[grouped_df.causeId == idx].iloc[0])
+      names.append(grouped_df.causeName.loc[grouped_df.causeId == idx].iloc[0])
+      usernames.append(cat_code_to_user[grouped_df.username.loc[grouped_df.causeId == idx].iloc[0]])
+      scores.append(recommend_vector[idx])
 
-    recommendations = pd.DataFrame({'title': names, 'score': scores, 'username':  usernames})
-    
-    return recommendations
-if __name__ == "__main__":
-    app.before_first_request(train_model)
-    app.run(port=5001)
+  recommendations = pd.DataFrame({'title': names, 'score': scores, 'username':  usernames})
+  
+  return recommendations
 
-# make_recommendation()
+app.before_first_request(train_model)
+app.run(host="0.0.0.0",port=os.getenv('PORT'))
+
+
 

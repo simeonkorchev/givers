@@ -7,6 +7,7 @@ configure_properties() {
 	local db_user
 	local db_password
 	local db_host
+	local db_port
 	local backend_port
 	local auth_source
     local jwt_secret
@@ -21,15 +22,17 @@ configure_properties() {
       "MONGO_HOST") db_host="$value" ;;
       "JWT_SECRET") jwt_secret="$value" ;;
       "JWT_EXPIRATION") jwt_expiration="$value" ;;
+      "MONGO_PORT") db_port="$value" ;;
       esac
 	done < "$CONFIG_FILE"
-	uri="mongodb://${db_user}:${db_password}@${db_host}/${auth_source}?authSource=${auth_source}&gssapiServiceName=mongodb"
+	uri="mongodb://${db_user}:${db_password}@${db_host}:${db_port}/${auth_source}?authSource=${auth_source}&gssapiServiceName=mongodb"
 	echo "spring.data.mongodb.uri=${uri}" > "$SPRING_CONF_FILE"
 	echo "spring.data.mongodb.database=${auth_source}" >> "$SPRING_CONF_FILE"
 	echo "server.port=${backend_port}" >> "$SPRING_CONF_FILE"
     echo "spring.data.mongodb.database=${auth_source}" >> "$SPRING_CONF_FILE"
     echo "spring.data.mongodb.authentication-database=${auth_source}" >> "$SPRING_CONF_FILE"
     echo "server.port=${backend_port}" >> "$SPRING_CONF_FILE"
+
 	cat <<EOF > init-mongo.js
 db.createUser({
 	user: "$db_user",
@@ -52,6 +55,12 @@ db.createUser({
 EOF
 }
 
+echo "Preparing configurations..."
+
 configure_properties
+
+echo "Preparation of the configurations done..."
+
+echo "Running docker-compose up..."
 
 docker-compose up --build
