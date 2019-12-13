@@ -90,7 +90,10 @@ public final class CauseServiceImpl implements CauseService {
 				.findByUsername(username)
 				.switchIfEmpty(raiseIllegalState("Could not find user with username: " + username))
 				.filter(user -> {
-					return user.getCauses().stream().anyMatch(causeId -> causeId.equals(cause.getId()));
+					if(user.getCauses() == null) {
+						return true;
+					}
+					return !user.getCauses().stream().anyMatch(causeId -> causeId.equals(cause.getId()));
 				})
 				.switchIfEmpty(Mono.empty())
 				.doOnSuccess(user -> {
