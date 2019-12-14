@@ -32,6 +32,7 @@ configure_properties() {
     echo "spring.data.mongodb.database=${auth_source}" >> "$SPRING_CONF_FILE"
     echo "spring.data.mongodb.authentication-database=${auth_source}" >> "$SPRING_CONF_FILE"
     echo "server.port=${backend_port}" >> "$SPRING_CONF_FILE"
+    echo "recommender.url=http://localhost:${recommender_port}" >> "$SPRING_CONF_FILE"
 
 	cat <<EOF > init-mongo.js
 db.createUser({

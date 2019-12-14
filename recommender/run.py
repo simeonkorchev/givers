@@ -28,7 +28,7 @@ grouped_df = []
 user_to_cat_code = []
 
 def train_model():
-  df = read_mongo(os.getenv('MONGO_DB'), "log", host=os.getenv('MONGO_HOST'), port=os.getenv('MONGO_PORT'), username=os.getenv('MONGO_USERNAME'), password=os.getenv('MONGO_PASSWORD'))
+  df = read_mongo("test", "log", host=os.getenv('MONGO_HOST'), port=os.getenv('MONGO_PORT'), username=os.getenv('MONGO_USERNAME'), password=os.getenv('MONGO_PASSWORD'))
   isempty = df.empty
   if isempty: 
     return
@@ -64,7 +64,7 @@ def train_model():
 def _connect_mongo(host, port, username, password, db):
     """ A util for making a connection to mongo """
     if username and password:
-        mongo_uri = 'mongodb://%s:%s@%s:%s/%s' % (username, password, host, port, db)
+        mongo_uri = 'mongodb://%s:%s@%s:%s/%s?authSource=givers' % (username, password, host, port, db)
         conn = MongoClient(mongo_uri)
     else:
         conn = MongoClient(host, port)
@@ -120,7 +120,7 @@ def make_recommendation(username):
   return response
 
 def recommend(person_id, num_contents=3):
-  if sparse_content_person.empty:
+  if sparse_content_person.nnz == 0:
     return
   # Get the interactions scores from the sparse person content matrix
   person_interactions = sparse_person_content[person_id,:].toarray()
