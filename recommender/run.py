@@ -9,6 +9,7 @@ from flask import Flask
 import json
 from flask import request, Response
 import os
+from pandas.io.json import json_normalize
 
 app = Flask(__name__)
 
@@ -27,29 +28,25 @@ content_vecs = []
 grouped_df = []
 user_to_cat_code = []
 
-def train_model():
-  df = read_mongo("test", "log", host=os.getenv('MONGO_HOST'), port=os.getenv('MONGO_PORT'), username=os.getenv('MONGO_USERNAME'), password=os.getenv('MONGO_PASSWORD'))
-  isempty = df.empty
-  if isempty: 
-    return
+def _train_model(df):
   df['eventStrength'] = df['eventType'].apply(lambda x: 
   event_type_strength[x])
-  global grouped_df
-  grouped_df = df.groupby(['causeId', 'username', 'causeName']).sum().reset_index()
-  grouped_df['causeId'] = grouped_df['causeId'].astype("category")
-  grouped_df['username'] = grouped_df['username'].astype("category")
-  grouped_df['causeName'] = grouped_df['causeName'].astype("category")
-  global cat_code_to_user
+  #global grouped_df
+  grouped_df = group_df(df)
   cat_code_to_user = dict( enumerate(grouped_df['username'].cat.categories ) )
-  
+    
   global user_to_cat_code
-  user_to_cat_code = {v: k for k, v in cat_code_to_user.items()}
-  grouped_df['username'] = grouped_df['username'].cat.codes
-  grouped_df['causeId'] = grouped_df['causeId'].cat.codes
+  extra = {v: k for k, v in cat_code_to_user.items()}
+  if not user_to_cat_code:
+    user_to_cat_code = extra
+  else:
+    user_to_cat_code.update(extra)
 
-  global sparse_content_person
+  create_categories(grouped_df)
+
+  #global sparse_content_person
   sparse_content_person = sparse.csr_matrix((grouped_df['eventStrength'].astype(float), (grouped_df['causeId'], grouped_df['username'])))
-  global sparse_person_content
+  #global sparse_person_content
   sparse_person_content = sparse.csr_matrix((grouped_df['eventStrength'].astype(float), (grouped_df['username'], grouped_df['causeId'])))
   global model
   model = implicit.als.AlternatingLeastSquares(factors=20, regularization=0.1, iterations=100)
@@ -60,6 +57,13 @@ def train_model():
   person_vecs = sparse.csr_matrix(model.user_factors)
   global content_vecs
   content_vecs = sparse.csr_matrix(model.item_factors)
+
+def train_model():
+  df = read_mongo("test", "log", host=os.getenv('MONGO_HOST'), port=os.getenv('MONGO_PORT'), username=os.getenv('MONGO_USERNAME'), password=os.getenv('MONGO_PASSWORD'))
+  isempty = df.empty
+  if isempty: 
+    return
+  _train_model(df)
 
 def _connect_mongo(host, port, username, password, db):
     """ A util for making a connection to mongo """
@@ -119,8 +123,31 @@ def make_recommendation(username):
   )
   return response
 
+def group_df(df):
+  grouped_df = df.groupby(['causeId', 'username', 'causeName']).sum().reset_index()
+  grouped_df['causeId'] = grouped_df['causeId'].astype("category")
+  grouped_df['username'] = grouped_df['username'].astype("category")
+  grouped_df['causeName'] = grouped_df['causeName'].astype("category")
+  return grouped_df
+
+def create_categories(grouped_df):
+  grouped_df['username'] = grouped_df['username'].cat.codes
+  grouped_df['causeId'] = grouped_df['causeId'].cat.codes
+  return grouped_df
+
 def recommend(person_id, num_contents=3):
-  if sparse_content_person.nnz == 0:
+  df = read_mongo("test", "log", host=os.getenv('MONGO_HOST'), port=os.getenv('MONGO_PORT'), username=os.getenv('MONGO_USERNAME'), password=os.getenv('MONGO_PASSWORD'))
+  df['eventStrength'] = df['eventType'].apply(lambda x: 
+  event_type_strength[x])
+  #global grouped_df
+  grouped_df = group_df(df)
+  grouped_df = create_categories(grouped_df)
+
+  sparse_content_person = sparse.csr_matrix((grouped_df['eventStrength'].astype(float), (grouped_df['causeId'], grouped_df['username'])))
+  #global sparse_person_content
+  sparse_person_content = sparse.csr_matrix((grouped_df['eventStrength'].astype(float), (grouped_df['username'], grouped_df['causeId'])))
+
+  if sparse_person_content.nnz == 0:
     return
   # Get the interactions scores from the sparse person content matrix
   person_interactions = sparse_person_content[person_id,:].toarray()
@@ -143,17 +170,26 @@ def recommend(person_id, num_contents=3):
   usernames = []
   scores = []
   names = []
+  causeIds = []
 
   for idx in content_idx:
       # Append titles and scores to the list
       # names.append(grouped_df.causeName.loc[grouped_df.causeId == idx].iloc[0])
       names.append(grouped_df.causeName.loc[grouped_df.causeId == idx].iloc[0])
-      usernames.append(cat_code_to_user[grouped_df.username.loc[grouped_df.causeId == idx].iloc[0]])
+      # usernames.append(cat_code_to_user[grouped_df.username.loc[grouped_df.causeId == idx].iloc[0]])
+      causeIds.append(grouped_df.causeId.loc[grouped_df.causeId == idx].iloc[0])
       scores.append(recommend_vector[idx])
 
-  recommendations = pd.DataFrame({'title': names, 'score': scores, 'username':  usernames})
+  recommendations = pd.DataFrame({'title': names, 'score': scores, 'causeIds': causeIds})
   
   return recommendations
+
+@app.route('/api/v1/retrain', methods=['POST'])
+def retrain_model():
+  print(request.get_json())
+  df = pd.Series(request.get_json()).to_frame()
+  print(df)
+  _train_model(df)
 
 app.before_first_request(train_model)
 app.run(host="0.0.0.0",port=os.getenv('PORT'))
