@@ -97,6 +97,9 @@ public final class CauseServiceImpl implements CauseService {
 				})
 				.switchIfEmpty(Mono.empty())
 				.doOnSuccess(user -> {
+					if(user == null) {
+						return;
+					}
 					log.info("Found user: " + user);
 					user.setCauses(appendIdToList(user.getCauses(), cause.getId()));
 					this.userRepository.save(user).subscribe();

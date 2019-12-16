@@ -15,25 +15,28 @@ configure_properties() {
 
 	while IFS="=" read -r key value; do
       case "$key" in
-      "MONGO_USERNAME") db_user="$value" ;;
-      "MONGO_PASSWORD") db_password="$value" ;;
-      "BACKEND_PORT") backend_port="$value" ;;
-      "MONGO_INITDB_DATABASE") auth_source="$value" ;;
-      "MONGO_HOST") db_host="$value" ;;
-      "JWT_SECRET") jwt_secret="$value" ;;
-      "JWT_EXPIRATION") jwt_expiration="$value" ;;
-      "MONGO_PORT") db_port="$value" ;;
+        "MONGO_USERNAME") db_user="$value" ;;
+        "MONGO_PASSWORD") db_password="$value" ;;
+        "BACKEND_PORT") backend_port="$value" ;;
+        "MONGO_INITDB_DATABASE") auth_source="$value" ;;
+        "MONGO_HOST") db_host="$value" ;;
+        "JWT_SECRET") jwt_secret="$value" ;;
+        "JWT_EXPIRATION") jwt_expiration="$value" ;;
+        "MONGO_PORT") db_port="$value" ;;
+        "RECOMMENDER_PORT") recommender_port="$value" ;;
+        "RECOMMENDER_PATH") recommender_path="$value" ;;
+        "INIT_DATA") init_data="$value" ;;
       esac
 	done < "$CONFIG_FILE"
+
 	uri="mongodb://${db_user}:${db_password}@${db_host}:${db_port}/${auth_source}?authSource=${auth_source}&gssapiServiceName=mongodb"
 	echo "spring.data.mongodb.uri=${uri}" > "$SPRING_CONF_FILE"
-	echo "spring.data.mongodb.database=${auth_source}" >> "$SPRING_CONF_FILE"
 	echo "server.port=${backend_port}" >> "$SPRING_CONF_FILE"
     echo "spring.data.mongodb.database=${auth_source}" >> "$SPRING_CONF_FILE"
     echo "spring.data.mongodb.authentication-database=${auth_source}" >> "$SPRING_CONF_FILE"
-    echo "server.port=${backend_port}" >> "$SPRING_CONF_FILE"
     echo "recommender.url=http://localhost:${recommender_port}" >> "$SPRING_CONF_FILE"
-
+    echo "recommender.path=${recommender_path}" >> "$SPRING_CONF_FILE"
+    echo "init.data=${init_data}" >> "$SPRING_CONF_FILE"
 	cat <<EOF > init-mongo.js
 db.createUser({
 	user: "$db_user",
@@ -53,6 +56,12 @@ db.createUser({
 	  }
 	]
 })
+EOF
+    cat <<EOF > frontend/src/environments/environment.ts
+export const environment = {
+  production: false,
+  backendUrl: "http://localhost:${backend_port}"
+};
 EOF
 }
 
