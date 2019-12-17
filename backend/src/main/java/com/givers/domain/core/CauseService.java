@@ -24,14 +24,14 @@ public interface CauseService {
 			List<String> participantIds);
 	Mono<Cause> create(
 			String name, 
-			String ownerId, 
+			String ownerId,
 			String location, 
-			String description, 
+			String description,
 			String causeType, 
 			Long time, 
 			List<String> commentIds, 
 			List<String> participantIds); 
 	Mono<Cause> delete(String id);
-	Flux<Cause> getUserParticipation(String ownerId);
+	Flux<Cause> getUserParticipation(String id);
 	Mono<Cause> attendToCause(Cause cause, String username);
 }

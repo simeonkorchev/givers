@@ -25,6 +25,7 @@ configure_properties() {
         "MONGO_PORT") db_port="$value" ;;
         "RECOMMENDER_PORT") recommender_port="$value" ;;
         "RECOMMENDER_PATH") recommender_path="$value" ;;
+        "RECOMMENDER_HOST") recommender_host="$value" ;;
         "INIT_DATA") init_data="$value" ;;
         "LOGS_COUNT") logs_count="$value" ;;
         "CAUSES_COUNT") causes_count="$value" ;;
@@ -36,7 +37,7 @@ configure_properties() {
 	echo "server.port=${backend_port}" >> "$SPRING_CONF_FILE"
     echo "spring.data.mongodb.database=${auth_source}" >> "$SPRING_CONF_FILE"
     echo "spring.data.mongodb.authentication-database=${auth_source}" >> "$SPRING_CONF_FILE"
-    echo "recommender.url=http://localhost:${recommender_port}" >> "$SPRING_CONF_FILE"
+    echo "recommender.url=http://${recommender_host}:${recommender_port}" >> "$SPRING_CONF_FILE"
     echo "recommender.path=${recommender_path}" >> "$SPRING_CONF_FILE"
     echo "init.data=${init_data}" >> "$SPRING_CONF_FILE"
     echo "causes.count=${causes_count}" >> "$SPRING_CONF_FILE"
@@ -77,4 +78,4 @@ echo "Preparation of the configurations done..."
 
 echo "Running docker-compose up..."
 
-#docker-compose up --build
+docker-compose up --build

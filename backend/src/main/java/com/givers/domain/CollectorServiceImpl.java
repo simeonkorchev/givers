@@ -11,18 +11,19 @@ import com.givers.repository.entity.EventType;
 import com.givers.repository.entity.Log;
 
 import lombok.extern.log4j.Log4j2;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Log4j2
 @Service
 public class CollectorServiceImpl implements CollectorService{
 
-	private CollectorRepository repository;
+	private CollectorRepository collectorRepository;
 	
 	@Autowired
 	public CollectorServiceImpl(CollectorRepository repository) {
 		super();
-		this.repository = repository;
+		this.collectorRepository = repository;
 	}
 
 	@Override
@@ -30,7 +31,7 @@ public class CollectorServiceImpl implements CollectorService{
 		if(!isEventTypeExpected(eventType)) {
 			return raiseIllegalState("Unexpected event type");
 		}
-		return this.repository
+		return this.collectorRepository
 				.save(new Log(null, username, causeId, eventType, causeName, System.currentTimeMillis()));
 	}
 	
@@ -40,5 +41,10 @@ public class CollectorServiceImpl implements CollectorService{
 	
 	private <T> Mono<T> raiseIllegalState(String errorMsg) {
 		return Mono.error(new IllegalStateException(errorMsg));
+	}
+
+	@Override
+	public Flux<Log> getByUsername(String username) {
+		return this.collectorRepository.findByUsername(username);
 	}
 }

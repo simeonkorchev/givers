@@ -21,7 +21,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class CommentServiceImpl implements CommentService {
 	private final ApplicationEventPublisher publisher;
-	private final CommentRepository repository;
+	private final CommentRepository commentRepository;
 	private final CauseRepository causeRepository;
 	private final UserRepository userRepository;
 	
@@ -32,30 +32,30 @@ public class CommentServiceImpl implements CommentService {
 			UserRepository userRepository) {
 		super();
 		this.publisher = publisher;
-		this.repository = repository;
+		this.commentRepository = repository;
 		this.causeRepository = causeRepository;
 		this.userRepository = userRepository;
 	}
 	
 	public Flux<Comment> all() {
-		return this.repository.findAll();
+		return this.commentRepository.findAll();
 	}
 	
 	public Mono<Comment> get(String id) {
-		return this.repository.findById(id);
+		return this.commentRepository.findById(id);
 	}
 	
 	public Mono<Comment> update(String id, String content, String ownerId, String causeId) {
-		return this.repository
+		return this.commentRepository
 				.findById(id)
 				.map(c -> new Comment(c.getId(), content, ownerId, causeId))
-				.flatMap(this.repository::save);
+				.flatMap(this.commentRepository::save);
 	}
 	
 	public Mono<Comment> delete(String id) {
-		return this.repository
+		return this.commentRepository
 				.findById(id)
-				.flatMap(c -> this.repository
+				.flatMap(c -> this.commentRepository
 						.deleteById(c.getId())
 						.thenReturn(c)
 				);
@@ -63,7 +63,7 @@ public class CommentServiceImpl implements CommentService {
 	
 	public Mono<Comment> create(String content, String owner, String causeId) {
 		log.info("Creating comment with content ", content, " username ", owner, " and cause id: ", causeId);
-		return this.repository
+		return this.commentRepository
 				.save(new Comment(null, content, owner, causeId))
 				.doOnSuccess(c -> {
 					log.info(c);

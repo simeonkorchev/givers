@@ -26,7 +26,6 @@ import com.givers.repository.entity.EventType;
 import com.givers.repository.entity.Log;
 import com.givers.repository.entity.User;
 
-import jdk.internal.joptsimple.internal.Strings;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -67,10 +66,14 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
 		this.collectorRepo = collectorRepository;
 		this.citiesReader = new CitiesReader();
 		this.recService = recService;
-		this.causesCount = Strings.isNullOrEmpty(causesCountConfig) ? DEFAULT_CAUSES_COUNT : Integer.parseInt(causesCountConfig);
-		this.logsCount = Strings.isNullOrEmpty(logsCountConfig) ? DEFAULT_LOGS_COUNT : Integer.parseInt(logsCountConfig);
+		this.causesCount = isNullOrEmpty(causesCountConfig) ? DEFAULT_CAUSES_COUNT : Integer.parseInt(causesCountConfig);
+		this.logsCount = isNullOrEmpty(logsCountConfig) ? DEFAULT_LOGS_COUNT : Integer.parseInt(logsCountConfig);
 	}
 	
+	private static boolean isNullOrEmpty(String data) {
+		return data == null || data.isEmpty();
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {

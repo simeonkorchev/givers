@@ -17,7 +17,6 @@ import reactor.core.publisher.Flux;
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping(value = "/recommend")
 public class RecommenderRestController {
-	
 	public RecommenderService recommenderService;
 	
 	public RecommenderRestController(RecommenderService recommenderService) {

@@ -34,12 +34,12 @@ public class UserGenerator implements Generator<User> {
 	}
 
 	@Override
-	public List<User> generate(int limit) {
+	public List<User> generate(int c) {
 		List<Role> allRoles = new ArrayList<>();
     	allRoles.add(Role.ROLE_USER);
     	System.out.println();
     	Random r = new Random();
-    	String userPassword = "abcd1234";
+    	String userPassword = "Abcd1234";
     	int causesCount = 100;
     	String mailSuffix = "@abv.bg";
     	String encodedPwd = getEncodedPassword(userPassword);

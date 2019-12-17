@@ -13,8 +13,8 @@ import com.givers.repository.entity.User;
 
 public class CauseGenerator implements Generator<Cause>, Supplier<String> {
 	private final Random random = new Random();
-	private final long minDay = LocalDate.of(2020, 3, 3).toEpochDay();
-	private final long maxDay = LocalDate.of(2020, 12, 30).toEpochDay();
+	private static final long MIN_DAY = LocalDate.of(2020, 3, 3).toEpochDay();
+	private static final long MAX_DAY = LocalDate.of(2020, 12, 30).toEpochDay();
 	private final List<User> owners;
 
 	private static final String ADULTS_TITLE = "Нека помогнем на възрастен човек в ";
@@ -33,9 +33,9 @@ public class CauseGenerator implements Generator<Cause>, Supplier<String> {
 	}
 
 	@Override
-	public List<Cause> generate(int limit) {
-		List<Cause> causes = new ArrayList<>(limit);
-		for (int i = 0; i < limit; i++) {
+	public List<Cause> generate(int count) {
+		List<Cause> causes = new ArrayList<>(count);
+		for (int i = 0; i < count; i++) {
 			String causeType = this.getRandomCauseType();
 			String location = this.getRandomLocation();
 			String ownerId = this.owners.get(this.random.nextInt(this.owners.size())).getId();
@@ -79,7 +79,7 @@ public class CauseGenerator implements Generator<Cause>, Supplier<String> {
 
 	private Long getRandomDate() {
 		// to get the day use: LocalDate.ofEpochDay(long);
-		return minDay + random.nextInt((int) (maxDay - minDay));
+		return MIN_DAY + random.nextInt((int) (MAX_DAY - MIN_DAY));
 	}
 
 	@Override

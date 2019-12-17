@@ -37,29 +37,26 @@ public class LogGenerator implements Generator<Log>{
 		initCauseTypesToCauses();
 		initLocationsToCauses();
 	}
-
+	
+	// Prepare a valid tendentions in the logs
+	// By which the user will have a certain preferences for certain causes
+	// The preferences could be not only for cause type but could be for cause
+	// location also
+	// Think of combining the two parameters and create a logs based on them.
+	// Flow:
+	// A random user, which is not owner of the cause
+	// Makes 5 random interactios (attend, view or comment)
+	// With 5 causes from the same type and location (if possible)
+	// If the location have no other causes, then an other random location is chosen
+	// All this is being done for the half of the users.
+	// If the interaction is attend or comment, then the cause and user needs to be updated accordingly
 	@Override
-	public List<Log> generate(int limit) {
-		List<Log> logs = new ArrayList<>(limit);
-		for (int j = 0; j < limit;) {
-			// TODO figure out how to prepare a valid tendentions in the logs
-			// By which the user will have a certain preferences for certain causes
-			// The preferences could be not only for cause type but could be for cause
-			// location also
-			// Think of combining the two parameters and create a logs based on them.
-			// Flow:
-			// A random user, which is not owner of the cause
-			// Makes 5 random interactios (attend, view or comment)
-			// With 5 causes from the same type and location (if possible)
-			// If the location have no other causes, then an other random location is chosen
-			// All this is being done for the half of the users
-			// If the interaction is attend or comment, then the cause and user needs to be
-			// updated accordingly
+	public List<Log> generate(int count) {
+		List<Log> logs = new ArrayList<>(count);
+		for (int j = 0; j < count;) {
 			User user = getRandomUser();
 			String causeType = this.causeTypeSupplier.supply();
 			Cause cause = getRandomCauseWithType(causeType);
-//			System.out.println("Selected cause with type " + causeType);
-//			System.out.println("Selected user " + user.getUsername());
 			boolean isStart = true;
 			for (int i = 0; i < 5; i++, j++) {
 				if (!isStart) {
@@ -76,38 +73,28 @@ public class LogGenerator implements Generator<Log>{
 				String logType = getRandomLogType();
 
 				switch (logType) {
-				case "ATTEND": {
-					// in case that attend is the type, then for sure thte user is also viewed the
-					// cause
-						this.causeService.attendToCause(cause, user.getUsername()).subscribe();
-						logs.add(new Log(null,user.getUsername(),cause.getId(), logType, cause.getName(), System.currentTimeMillis()));
-						logs.add(new Log(null,user.getUsername(),cause.getId(), "CAUSE_DETAILS_VIEWED", cause.getName(), System.currentTimeMillis()));
-//					System.out.println("Saving log with type " + logType + " for user " + user.getUsername()
-//							+ " and cause " + cause.getName());
-//					System.out.println("Updating the cause and user..");
-					break;
-				}
-				case "CAUSE_DETAILS_VIEWED": {
-//					System.out.println("Saving log with type " + logType + " for user " + user.getUsername()
-//							+ " and cause " + cause.getName());
-						logs.add(new Log(null,user.getUsername(),cause.getId(), logType, cause.getName(), System.currentTimeMillis()));
-					break;
-				}
-				case "CAUSE_TYPE_VIEWED": {
-//					System.out.println("Saving log with type " + logType + " for user " + user.getUsername()
-//							+ " and cause " + cause.getName());
-						logs.add(new Log(null,user.getUsername(),cause.getId(), logType, cause.getName(), System.currentTimeMillis()));
-					break;
-				}
-				case "COMMENT_CREATED": {
-//					System.out.println("Saving log with type " + logType + " for user " + user.getUsername()
-//							+ " and cause " + cause.getName());
-//					System.out.println("Creating comment, updating cause and user..");
-						this.commentService.create("Харесвам каузата и бих желал да участвам. Може ли малко повече информация за нея?", user.getUsername(), cause.getId()).subscribe();
-						logs.add(new Log(null,user.getUsername(),cause.getId(), "CAUSE_DETAILS_VIEWED", cause.getName(), System.currentTimeMillis()));
-						logs.add(new Log(null,user.getUsername(),cause.getId(), logType, cause.getName(), System.currentTimeMillis()));
-					break;
-				}
+					case "ATTEND": {
+						// in case that attend is the type, then for sure thte user is also viewed the
+						// cause
+							this.causeService.attendToCause(cause, user.getUsername()).subscribe();
+							logs.add(new Log(null,user.getUsername(),cause.getId(), logType, cause.getName(), System.currentTimeMillis()));
+							logs.add(new Log(null,user.getUsername(),cause.getId(), "CAUSE_DETAILS_VIEWED", cause.getName(), System.currentTimeMillis()));
+						break;
+					}
+					case "CAUSE_DETAILS_VIEWED": {
+							logs.add(new Log(null,user.getUsername(),cause.getId(), logType, cause.getName(), System.currentTimeMillis()));
+						break;
+					}
+					case "CAUSE_TYPE_VIEWED": {
+							logs.add(new Log(null,user.getUsername(),cause.getId(), logType, cause.getName(), System.currentTimeMillis()));
+						break;
+					}
+					case "COMMENT_CREATED": {
+							this.commentService.create("Харесвам каузата и бих желал да участвам. Може ли малко повече информация за нея?", user.getUsername(), cause.getId()).subscribe();
+							logs.add(new Log(null,user.getUsername(),cause.getId(), "CAUSE_DETAILS_VIEWED", cause.getName(), System.currentTimeMillis()));
+							logs.add(new Log(null,user.getUsername(),cause.getId(), logType, cause.getName(), System.currentTimeMillis()));
+						break;
+					}
 				}
 			}
 
