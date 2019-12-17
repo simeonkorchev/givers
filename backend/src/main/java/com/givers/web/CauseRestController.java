@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.givers.domain.CauseService;
+import com.givers.domain.core.CauseService;
 import com.givers.repository.entity.Cause;
 
 import lombok.extern.log4j.Log4j2;
@@ -25,33 +25,33 @@ import reactor.core.publisher.Mono;
 @Log4j2
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping(value = "/causes", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/causes")
 public class CauseRestController {
 	private final MediaType mediaType = MediaType.APPLICATION_JSON_UTF8;
-	private final CauseService service;
+	private final CauseService causeService;
 	
 	CauseRestController(CauseService service) {
-		this.service = service;
+		this.causeService = service;
 	}
 	
 	@GetMapping
 	@PreAuthorize("hasRole('USER')")
 	Publisher<Cause> getAll() {
 		log.info("Getting all causes");
-		return this.service.all();
+		return this.causeService.all();
 	}
 	
 	@GetMapping("/{id}")
 	@PreAuthorize("hasRole('USER')")
 	Publisher<Cause> getById(@PathVariable("id") String id) {
-		return this.service.get(id);
+		return this.causeService.get(id);
 	}
 	
 	@PostMapping
 	@PreAuthorize("hasRole('USER')")
 	Mono<ResponseEntity<Cause>> create(@RequestBody Cause c) {
 		log.info("Creating cause: " + c.toString());
-		return this.service.create(c.getName(),c.getOwnerId(),
+		return this.causeService.create(c.getName(),c.getOwnerId(),
 				c.getLocation(),c.getDescription(), c.getCauseType(), c.getTime(), c.getCommentIds(), c.getParticipantIds())
 				.map(r -> ResponseEntity.created(URI.create("/causes/" + r.getId()))
 						.contentType(mediaType)
@@ -61,7 +61,7 @@ public class CauseRestController {
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasRole('USER')")
 	Publisher<Cause> deleteById(@PathVariable("id") String id) {
-		return this.service.delete(id);
+		return this.causeService.delete(id);
 	}
 	
 	@PutMapping("/{id}")
@@ -69,7 +69,7 @@ public class CauseRestController {
 	Mono<ResponseEntity<Cause>> updateById(@PathVariable("id") String id, @RequestBody Cause cause) {
 		return Mono
 				.just(cause)
-				.flatMap(c -> this.service.update(c.getId(), c.getName(),c.getOwnerId(),
+				.flatMap(c -> this.causeService.update(c.getId(), c.getName(),c.getOwnerId(),
 						c.getLocation(),c.getDescription(), c.getCauseType(), c.getTime(), c.getCommentIds(), c.getParticipantIds()))
 				.map(c -> ResponseEntity
 						.ok()
@@ -82,7 +82,7 @@ public class CauseRestController {
 	Mono<ResponseEntity<Cause>> attendToCause(@PathVariable("username") String username, @RequestBody Cause cause) {
 		return Mono
 				.just(cause)
-				.flatMap(c -> this.service.updateAttendanceList(cause, username))
+				.flatMap(c -> this.causeService.attendToCause(cause, username))
 				.map(c -> ResponseEntity
 							.ok()
 							.contentType(mediaType)
@@ -92,12 +92,12 @@ public class CauseRestController {
 	@GetMapping("/own/{ownerId}")
 	@PreAuthorize("hasRole('USER')")
 	Publisher<Cause> findOwnCauses(@PathVariable("ownerId") String ownerId) {
-		return this.service.getByOwnerId(ownerId);
+		return this.causeService.getByOwnerId(ownerId);
 	}
 	
 	@GetMapping("/attend/{ownerId}")
 	@PreAuthorize("hasRole('USER')")
 	Publisher<Cause> getUserParticipation(@PathVariable("ownerId") String ownerId) {
-		return this.service.getUserParticipation(ownerId);
+		return this.causeService.getUserParticipation(ownerId);
 	}
 }

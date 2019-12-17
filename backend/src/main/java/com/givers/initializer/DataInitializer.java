@@ -14,11 +14,10 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.givers.domain.CauseService;
-import com.givers.domain.CausesResponse;
-import com.givers.domain.CommentService;
 import com.givers.domain.RecommendedCause;
-import com.givers.domain.RecommenderService;
+import com.givers.domain.core.CauseService;
+import com.givers.domain.core.CommentService;
+import com.givers.domain.core.RecommenderService;
 import com.givers.repository.database.CauseRepository;
 import com.givers.repository.database.CollectorRepository;
 import com.givers.repository.database.UserRepository;
@@ -27,11 +26,15 @@ import com.givers.repository.entity.EventType;
 import com.givers.repository.entity.Log;
 import com.givers.repository.entity.User;
 
+import jdk.internal.joptsimple.internal.Strings;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Component
 public class DataInitializer implements ApplicationListener<ApplicationReadyEvent> {
+	private static final int DEFAULT_CAUSES_COUNT = 5000;
+	private static final int DEFAULT_LOGS_COUNT = 15000;
+	
 	private final CommentService commentService;
 	private final UserRepository userRepository;
 	private final CauseRepository causeRepo;
@@ -40,8 +43,15 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
 	private final PasswordEncoder encoder;
 	private final CitiesReader citiesReader;
 	private final RecommenderService recService; //TODO delete this after test.
+	
 	@Value("init.data")
 	private String shouldInitData;
+	@Value("causes.count")
+	private String causesCountConfig;
+	@Value("logs.count")
+	private String logsCountConfig;
+	private int causesCount;
+	private int logsCount;
 	private Generator<Cause> causeGenerator;
 	private Generator<Log> logGenerator;
 	private Generator<User> userGenerator;
@@ -57,6 +67,8 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
 		this.collectorRepo = collectorRepository;
 		this.citiesReader = new CitiesReader();
 		this.recService = recService;
+		this.causesCount = Strings.isNullOrEmpty(causesCountConfig) ? DEFAULT_CAUSES_COUNT : Integer.parseInt(causesCountConfig);
+		this.logsCount = Strings.isNullOrEmpty(logsCountConfig) ? DEFAULT_LOGS_COUNT : Integer.parseInt(logsCountConfig);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -93,7 +105,7 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
 		}
 		System.out.println("Generating data...");
 		List<String> cities = this.citiesReader.readCities();
-		this.userGenerator = new UserGenerator(cities, this.encoder, this.userRepository);
+		this.userGenerator = new UserGenerator(cities, this.encoder);
 		List<User> users = this.userGenerator.generate(Integer.MAX_VALUE);
 		List<User> savedUsers = new ArrayList<User>();
 		
@@ -115,7 +127,7 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
 			@Override
 			public void onComplete() {
 				causeGenerator = new CauseGenerator(savedUsers, cities);
-				List<Cause> causes = causeGenerator.generate(5000);
+				List<Cause> causes = causeGenerator.generate(causesCount);
 				List<Cause> savedCauses = new ArrayList<>();
 				causeRepo.saveAll(causes).subscribe(new Subscriber<Cause>() {
 
@@ -142,14 +154,13 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
 								causeService,
 								commentService
 						);
-						List<Log> logs = logGenerator.generate(15000);
+						List<Log> logs = logGenerator.generate(logsCount);
 						collectorRepo
 							.saveAll(logs)
 							.subscribe();
 					}
 				});
-			}
-			
+			}	
 		});
 	}
 }

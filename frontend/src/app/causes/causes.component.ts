@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthenticationService } from '../auth/auth';
 import 'rxjs/add/operator/map';
 import { CauseService } from '../cause-service.service';
@@ -8,6 +7,8 @@ import { AlertService } from '../alert-service';
 import { Cause } from "../cause"
 import { CollectorService } from '../collector.service';
 import { EventType } from '../event-type.enum';
+import { RecommenderService } from '../recommender-service.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-causes',
@@ -15,8 +16,9 @@ import { EventType } from '../event-type.enum';
   styleUrls: ['./causes.component.css']
 })
 export class CausesComponent implements OnInit {
-  public defaultImg: string = '/Users/i340033/Documents/givers-frontend/src/assets/placeholder.png';
+  public defaultImg: string = 'src/assets/placeholder.png';
   public entries: Array<any>;
+  private causes: Observable<Cause[]>;
 
   constructor(
     private router: Router, 
@@ -24,20 +26,14 @@ export class CausesComponent implements OnInit {
     private alertService: AlertService,
     private causeService: CauseService,
     private authService: AuthenticationService,
-    private collectorService: CollectorService
+    private collectorService: CollectorService,
+    private recommenderService: RecommenderService
     ) {
     this.entries = [];
   }
 
   ngOnInit() {
-    //TODO rewrite this in reactive whay, e.g. subscribe to the returned Observable
-    this.causeService.findAll().toPromise()
-    .then(result => { 
-        this.entries = result;
-    }).catch(err => {
-      this.alertService.error(err);
-    });
-    //TODO - add support for WebSockets
+    this.causes = this.causeService.findAll();
   }
 
   create() {
@@ -68,5 +64,9 @@ export class CausesComponent implements OnInit {
   
   logout() {
     this.authService.logout()
+  }
+
+  recommend() {
+    this.causes = this.recommenderService.getRecommendations(localStorage.getItem('username'), 10);
   }
 }

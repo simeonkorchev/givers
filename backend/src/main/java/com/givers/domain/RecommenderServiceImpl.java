@@ -6,16 +6,14 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.givers.repository.database.CauseRepository;
-import com.givers.repository.entity.Cause;
+import com.givers.domain.core.RecommenderService;
 
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Log4j2
 @Service
-public class RecommenderService {
+public class RecommenderServiceImpl implements RecommenderService  {
 	
 	private static final int DEFAULT_COUNT = 5;
 	@Value("${recommender.url}")
@@ -24,7 +22,7 @@ public class RecommenderService {
 	private String recommenderPath;
 	
 	@Autowired
-	public RecommenderService() {
+	public RecommenderServiceImpl() {
 	}
 	
 	public Flux<RecommendedCause> recommend(String username, final int count) {
@@ -39,6 +37,10 @@ public class RecommenderService {
 				.accept(MediaType.APPLICATION_JSON)
 				.header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
 				.retrieve()
-				.bodyToFlux(RecommendedCause.class);
+				.bodyToFlux(RecommendedCause.class)
+				.flatMap(recommendedCause -> { 
+					recommendedCause.setId(recommendedCause.get_id().getId());
+					return Flux.just(recommendedCause);
+				});
 	}
 }

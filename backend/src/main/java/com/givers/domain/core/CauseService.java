@@ -1,8 +1,6 @@
-package com.givers.domain;
+package com.givers.domain.core;
 
 import java.util.List;
-
-import org.springframework.stereotype.Service;
 
 import com.givers.repository.entity.Cause;
 
@@ -34,7 +32,6 @@ public interface CauseService {
 			List<String> commentIds, 
 			List<String> participantIds); 
 	Mono<Cause> delete(String id);
-	//TODO think of a way to extract the following in a separate service (component)?
 	Flux<Cause> getUserParticipation(String ownerId);
-	Mono<Cause> updateAttendanceList(Cause cause, String username);
+	Mono<Cause> attendToCause(Cause cause, String username);
 }

@@ -26,6 +26,8 @@ configure_properties() {
         "RECOMMENDER_PORT") recommender_port="$value" ;;
         "RECOMMENDER_PATH") recommender_path="$value" ;;
         "INIT_DATA") init_data="$value" ;;
+        "LOGS_COUNT") logs_count="$value" ;;
+        "CAUSES_COUNT") causes_count="$value" ;;
       esac
 	done < "$CONFIG_FILE"
 
@@ -37,6 +39,8 @@ configure_properties() {
     echo "recommender.url=http://localhost:${recommender_port}" >> "$SPRING_CONF_FILE"
     echo "recommender.path=${recommender_path}" >> "$SPRING_CONF_FILE"
     echo "init.data=${init_data}" >> "$SPRING_CONF_FILE"
+    echo "causes.count=${causes_count}" >> "$SPRING_CONF_FILE"
+    echo "logs.count=${logs_count}" >> "$SPRING_CONF_FILE"
 	cat <<EOF > init-mongo.js
 db.createUser({
 	user: "$db_user",
@@ -73,4 +77,4 @@ echo "Preparation of the configurations done..."
 
 echo "Running docker-compose up..."
 
-docker-compose up --build
+#docker-compose up --build

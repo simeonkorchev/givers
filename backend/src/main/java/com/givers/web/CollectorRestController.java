@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.givers.domain.CollectorService;
+import com.givers.domain.CollectorServiceImpl;
+import com.givers.domain.core.CollectorService;
 import com.givers.repository.entity.Log;
 
 import lombok.extern.log4j.Log4j2;

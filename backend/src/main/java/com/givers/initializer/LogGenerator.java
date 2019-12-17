@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import com.givers.domain.CauseService;
-import com.givers.domain.CommentService;
+import com.givers.domain.core.CauseService;
+import com.givers.domain.core.CommentService;
 import com.givers.repository.entity.Cause;
 import com.givers.repository.entity.Log;
 import com.givers.repository.entity.User;
@@ -79,7 +79,7 @@ public class LogGenerator implements Generator<Log>{
 				case "ATTEND": {
 					// in case that attend is the type, then for sure thte user is also viewed the
 					// cause
-						this.causeService.updateAttendanceList(cause, user.getUsername()).subscribe();
+						this.causeService.attendToCause(cause, user.getUsername()).subscribe();
 						logs.add(new Log(null,user.getUsername(),cause.getId(), logType, cause.getName(), System.currentTimeMillis()));
 						logs.add(new Log(null,user.getUsername(),cause.getId(), "CAUSE_DETAILS_VIEWED", cause.getName(), System.currentTimeMillis()));
 //					System.out.println("Saving log with type " + logType + " for user " + user.getUsername()

@@ -24,8 +24,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.givers.domain.PasswordResetTokenService;
-import com.givers.domain.UserService;
+import com.givers.domain.PasswordResetTokenServiceImpl;
+import com.givers.domain.UserServiceImpl;
+import com.givers.domain.core.PasswordResetTokenService;
+import com.givers.domain.core.UserService;
 import com.givers.repository.entity.User;
 
 import lombok.extern.log4j.Log4j2;
@@ -109,7 +111,7 @@ public class UserRestController {
     public Mono<User> updatePassword(@RequestParam("oldPassword") String oldPassword,
     		@RequestParam("newPassword") String newPassword, @RequestBody User user) {
     	log.info("checking whether password ", oldPassword, "matches and set the new password ", newPassword);
-    	return this.service.changeUserPassword(user, oldPassword, newPassword);
+    	return this.service.changeUserPassword(user.getUsername(), oldPassword, newPassword);
     }
     
 //    @PostMapping("/resetPassword")

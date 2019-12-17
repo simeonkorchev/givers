@@ -10,7 +10,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.util.StringUtils;
 
-import com.givers.domain.CommentService;
+import com.givers.domain.CommentServiceImpl;
 import com.givers.repository.database.CommentRepository;
 import com.givers.repository.entity.Comment;
 import com.givers.repository.entity.User;
@@ -22,13 +22,13 @@ import reactor.test.StepVerifier;
 
 @Log4j2
 @DataMongoTest
-@Import(CommentService.class)
+@Import(CommentServiceImpl.class)
 public class CommentServiceTest {
 	
-	private final CommentService service;
+	private final CommentServiceImpl service;
 	private final CommentRepository repository;
 	
-	public CommentServiceTest(@Autowired CommentService service,  @Autowired CommentRepository repository) {
+	public CommentServiceTest(@Autowired CommentServiceImpl service,  @Autowired CommentRepository repository) {
 		this.repository = repository;
 		this.service = service;
 	}

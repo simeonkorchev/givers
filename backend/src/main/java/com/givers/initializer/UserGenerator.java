@@ -27,14 +27,10 @@ public class UserGenerator implements Generator<User> {
 			"Kirilov", "Hristov" };
 	
 	private PasswordEncoder encoder;
-	private final Random random = new Random();
-	private List<String> ownerIds;
-	private final UserRepository userRepository;
 
-	public UserGenerator(List<String> cities, PasswordEncoder encoder, UserRepository userRepository) {
+	public UserGenerator(List<String> cities, PasswordEncoder encoder) {
 		super();
 		this.encoder = encoder;
-		this.userRepository = userRepository;
 	}
 
 	@Override
@@ -67,12 +63,6 @@ public class UserGenerator implements Generator<User> {
 	    						mailSuffix;
 				String username = new String(firstNameLatin + lastNameLatin).toLowerCase();
 				users.add(new User(null, email, username, firstNameLatin, lastNameLatin, encodedPwd, null, null, null, 0, authorities));
-//	    		
-//				this.userRepositor/y
-//	    			.findAll()
-//	    			.flatMap(u -> {
-//	    				return this.userRepository.save(new User(u.getId(), u.getEmail(), username, u.getFirstName(), u.getLastName(), u.getPassword(), u.getCauseIds(), u.getCommentIds(), u.getPhotoPath(), u.getHonor(), u.getAuthorities()));
-//	    			}).subscribe();
     		}
     	}
     	return users;

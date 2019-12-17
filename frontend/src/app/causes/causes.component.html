@@ -15,9 +15,14 @@
           <li><button type="button" [routerLink]="['/user']">
               <fa-icon icon="users-cog"></fa-icon> Profile
             </button></li>
+          <li><button (click)="recommend()">
+              <fa-icon icon="power-off"></fa-icon> Recomended For Me
+            </button>
+          </li>
           <li><button (click)="logout()" [routerLink]="['/login']">
               <fa-icon icon="power-off"></fa-icon> Logout
-            </button></li>
+            </button>
+          </li>
         </ul>
       </nav>
     </div>
@@ -26,12 +31,12 @@
   <div class="container">
     <section id="main-section">
       <div class="container">
-        <span *ngFor="let entry of entries">
+        <span *ngFor="let entry of causes | async">
           <li class="prod-teaser">
             <div class="prod-teaser-content">
               <img [src]="getImage(entry.photoPath)" width="270" height="246"/>
               <h6 class="prod-teaser-content-title">Name: {{ entry.name }}</h6>
-              <h6 class="prod-teaser-content-title">Date: {{ entry.time }}</h6>
+              <h6 class="prod-teaser-content-title">Date: {{ entry.time * 1000 | date:'yyyy-MM-dd HH:mm:ss Z'}}</h6>
               <h6 class="prod-teaser-content-title">Location: {{ entry.location }}</h6>
               <h6 class="prod-teaser-content-title">Attendance: {{ entry.participantIds?.length }}</h6>
               <div>

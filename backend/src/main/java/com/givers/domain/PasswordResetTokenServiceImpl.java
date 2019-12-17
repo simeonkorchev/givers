@@ -2,6 +2,7 @@ package com.givers.domain;
 
 import org.springframework.stereotype.Service;
 
+import com.givers.domain.core.PasswordResetTokenService;
 import com.givers.repository.database.PasswordResetTokenRepository;
 import com.givers.repository.entity.PasswordResetToken;
 import com.givers.repository.entity.User;
@@ -9,11 +10,11 @@ import com.givers.repository.entity.User;
 import reactor.core.publisher.Mono;
 
 @Service
-public class PasswordResetTokenService {
+public class PasswordResetTokenServiceImpl implements PasswordResetTokenService {
 	
 	private final PasswordResetTokenRepository repository;
 	
-	public PasswordResetTokenService(PasswordResetTokenRepository repository) {
+	public PasswordResetTokenServiceImpl(PasswordResetTokenRepository repository) {
 		this.repository = repository;
 	}
 	

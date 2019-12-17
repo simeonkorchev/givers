@@ -2,7 +2,12 @@ package com.givers.security.exception;
 
 public class UnauthorizedException extends RuntimeException {
 
-    public UnauthorizedException(String message) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public UnauthorizedException(String message) {
         super(message);
     }
 }

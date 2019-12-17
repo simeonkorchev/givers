@@ -44,6 +44,7 @@ public class CauseGenerator implements Generator<Cause>, Supplier<String> {
 			System.out.println("Random cause type: " + causeType);
 			System.out.println("Random location: " + location);
 			System.out.println("Random date: " + LocalDate.ofEpochDay(time));
+			System.out.println("The seconds are: "+ time);
 			String title = "";
 			switch (causeType) {
 			case "HOMELESS":

@@ -11,4 +11,10 @@ export class Cause {
     commentIds: Array<string>;
     participantIds: Array<string>;
     causeType: string;
+
+    constructor(jsonObj: any) {
+        for (let prop in jsonObj) {
+            this[prop] = jsonObj[prop];
+        }
+    }
 }

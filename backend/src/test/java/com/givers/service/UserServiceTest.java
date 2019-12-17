@@ -7,7 +7,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.util.StringUtils;
 
-import com.givers.domain.UserService;
+import com.givers.domain.UserServiceImpl;
 import com.givers.repository.database.UserRepository;
 import com.givers.repository.entity.User;
 
@@ -20,12 +20,12 @@ import java.util.function.Predicate;
 
 @Log4j2
 @DataMongoTest
-@Import(UserService.class)
+@Import(UserServiceImpl.class)
 public class UserServiceTest {
-	private final UserService service;
+	private final UserServiceImpl service;
 	private final UserRepository repository;
 
-	public UserServiceTest(@Autowired UserService service,
+	public UserServiceTest(@Autowired UserServiceImpl service,
     		@Autowired UserRepository repository) {
     	this.service = service;
     	this.repository = repository;

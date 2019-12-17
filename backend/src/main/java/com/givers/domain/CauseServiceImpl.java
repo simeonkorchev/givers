@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import com.givers.domain.core.CauseService;
 import com.givers.event.CauseCreatedEvent;
 import com.givers.repository.database.CauseRepository;
 import com.givers.repository.database.UserRepository;
@@ -85,7 +86,7 @@ public final class CauseServiceImpl implements CauseService {
 		return participantIds.stream().anyMatch(id -> id.equals(ownerId));
 	}
 
-	public Mono<Cause> updateAttendanceList(Cause cause, String username) {
+	public Mono<Cause> attendToCause(Cause cause, String username) {
 		return this.userRepository
 				.findByUsername(username)
 				.switchIfEmpty(raiseIllegalState("Could not find user with username: " + username))

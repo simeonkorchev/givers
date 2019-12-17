@@ -2,12 +2,10 @@ package com.givers.repository.entity;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.givers.validators.ValidEmail;
 import com.givers.validators.ValidPassword;
 

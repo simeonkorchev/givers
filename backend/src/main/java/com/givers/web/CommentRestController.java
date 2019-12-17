@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.givers.domain.CommentService;
+import com.givers.domain.CommentServiceImpl;
+import com.givers.domain.core.CommentService;
 import com.givers.repository.entity.Comment;
 
 import reactor.core.publisher.Mono;

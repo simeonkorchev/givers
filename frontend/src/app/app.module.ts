@@ -23,6 +23,7 @@ import { MatDatepickerModule, MatNativeDateModule, MatInputModule } from '@angul
 import { CauseDetailsComponent } from './cause-details/cause-details.component';
 import { UserOwnCausesComponent } from './user-own-causes/user-own-causes.component';
 import { UserParticipationComponent } from './user-participation/user-participation.component';
+import { RecommendationsComponent } from './recommendations/recommendations.component';
 
 let routes = [
   { path: "", redirectTo: "/login", pathMatch: "full" },
@@ -49,7 +50,8 @@ let routes = [
     ChangePasswordComponent,
     CauseDetailsComponent,
     UserOwnCausesComponent,
-    UserParticipationComponent
+    UserParticipationComponent,
+    RecommendationsComponent
   ],
   imports: [
     BrowserModule,

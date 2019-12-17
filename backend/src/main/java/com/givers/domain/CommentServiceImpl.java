@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import com.givers.domain.core.CommentService;
 import com.givers.event.CommentCreatedEvent;
 import com.givers.repository.database.CauseRepository;
 import com.givers.repository.database.CommentRepository;
@@ -18,13 +19,13 @@ import reactor.core.publisher.Mono;
 
 @Log4j2
 @Service
-public class CommentService {
+public class CommentServiceImpl implements CommentService {
 	private final ApplicationEventPublisher publisher;
 	private final CommentRepository repository;
 	private final CauseRepository causeRepository;
 	private final UserRepository userRepository;
 	
-	public CommentService(
+	public CommentServiceImpl(
 			ApplicationEventPublisher publisher, 
 			CommentRepository repository,
 			CauseRepository causeRepository,

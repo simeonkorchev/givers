@@ -7,6 +7,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.givers.domain.core.UserService;
 import com.givers.repository.database.UserRepository;
 import com.givers.repository.entity.Authority;
 import com.givers.repository.entity.User;
@@ -15,13 +16,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
-public class UserService {
+public class UserServiceImpl implements UserService{
 	@SuppressWarnings("unused")
 	private final ApplicationEventPublisher publisher; 
     private final UserRepository userRepository;
     private PasswordEncoder encoder;
     
-	public UserService(ApplicationEventPublisher publisher, UserRepository userRepository, PasswordEncoder encoder) {
+	public UserServiceImpl(ApplicationEventPublisher publisher, UserRepository userRepository, PasswordEncoder encoder) {
 		super();
 		this.publisher = publisher;
 		this.encoder = encoder;
@@ -65,8 +66,8 @@ public class UserService {
 				//.doOnSuccess(user -> this.publisher.publishEvent(new UserCreatedEvent(user)));
 	}
 	
-	public Mono<User> changeUserPassword(User user, String oldPassword, String newPassword) {
-		return this.userRepository.findByUsername(user.getUsername())
+	public Mono<User> changeUserPassword(String username, String oldPassword, String newPassword) {
+		return this.userRepository.findByUsername(username)
 			.switchIfEmpty(Mono.defer(this::raiseBadCredentials))
 			.filter(u -> this.encoder.matches(oldPassword, u.getPassword()))
 			.switchIfEmpty(Mono.defer(this::raiseBadCredentials))
