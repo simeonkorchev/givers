@@ -1,94 +1,117 @@
 package com.givers.service;
 
-import lombok.extern.log4j.Log4j2;
+import java.util.function.Predicate;
+
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 
 import com.givers.domain.UserServiceImpl;
 import com.givers.repository.database.UserRepository;
 import com.givers.repository.entity.User;
 
+import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.util.UUID;
-import java.util.function.Predicate;
-
 @Log4j2
 @DataMongoTest
-@Import(UserServiceImpl.class)
+@Import({BCryptPasswordEncoder.class, UserServiceImpl.class})
 public class UserServiceTest {
 	private final UserServiceImpl service;
-	private final UserRepository repository;
+	private static UserRepository repository;
 
-	public UserServiceTest(@Autowired UserServiceImpl service,
-    		@Autowired UserRepository repository) {
+	@Autowired
+	public UserServiceTest(UserRepository repository, UserServiceImpl service) {
+		UserServiceTest.repository = repository;
     	this.service = service;
-    	this.repository = repository;
     }
 	
+	@AfterAll
+	public static void clearDbEntries() {
+		repository.deleteAll();	
+	}
+	  
 	@Test 
     public void getAll() {
-//		Flux<User> saved = this.repository.saveAll(Flux.just(new User(null, "Simeon", "Simeon", null, null, null, null, null, 0), new User(null, "Simona", "Simona", null, null, null, null, null, 0)));
-//		
-//		Flux<User> composite = this.service.all().thenMany(saved);
-//		
-//		Predicate<User> match = user -> saved.any(saveItem -> saveItem.equals(user)).block();
-//		StepVerifier
-//			.create(composite)
-//			.expectNextMatches(match)
-//			.expectNextMatches(match)
-//			.verifyComplete();
+		Flux<User> saved = repository.saveAll(Flux.just(new User(null, "Test", "Test", "user@bv.bg", "user", "pass1234", null, null, null, 0, null), new User(null, "Test2", "Test2", "test2@abv.bg", "test2", "test2", null, null, null, 0, null)));
+		
+		Flux<User> composite = this.service.all().thenMany(saved);
+		
+		Predicate<User> match = user -> saved.any(saveItem -> saveItem.getFirstName().equals(user.getFirstName())).block();
+		StepVerifier
+			.create(composite)
+			.expectNextMatches(match)
+			.expectNextMatches(match)
+			.verifyComplete();
 	}
 
 	@Test
 	public void save() {
-//		Mono<User> userMono = this.service.create("email@email.com", "test0", null, null, false, null, null, 0);
-//		StepVerifier
-//			.create(userMono)
-//			.expectNextMatches(saved -> StringUtils.hasText(saved.getId()))
-//			.verifyComplete();
+		Mono<User> userMono = this.service.create("Test", "Test", "user", "user", "pass123", null, null, null, 0, null);
+		StepVerifier
+			.create(userMono)
+			.expectNextMatches(saved -> StringUtils.hasText(saved.getId()))
+			.verifyComplete();
 	}
 	
 	@Test
 	public void delete() {
-//		String email = "test@test.com";
-//		Mono<User> deleted = this.service
-//				.create(email, "test1", "test2", null, false, null, email, 0)
-//				.flatMap(created -> this.service.delete(created.getId()));
-//		
-//		StepVerifier
-//		.create(deleted)
-//		.expectNextMatches(user -> user.getEmail().equals(email))
-//		.verifyComplete();
+		String email = "test@test.com";
+		Mono<User> deleted = this.service
+				.create("Test", "Test", email, "user123", "pass1234", null, null, null, 0, null)
+				.flatMap(created -> this.service.delete(created.getId()));
+		
+		StepVerifier
+		.create(deleted)
+		.expectNextMatches(user -> user.getEmail().equals(email))
+		.verifyComplete();
 	}
 	
 	@Test
 	public void update() {
-//		Mono<User> updated = this.service
-//				.create("test1", "test123", null, null, false, null, null, 0)
-//				.flatMap(u -> this.service.update(u.getId(), "update", null, null, null, false, null, null, 0));
-//		
-//		StepVerifier
-//			.create(updated)
-//			.expectNextMatches(u -> u.getEmail().equals("update"))
-//			.verifyComplete();
+		Mono<User> updated = this.service
+				.create("Test", "Test", "email@email.com", "user1234", "pass1234", null, null, null, 0, null)
+				.flatMap(u -> this.service.update(u.getId(),"Test", "Test", "updatedemail@email.com", "user", "pass1234", null, null, null, 0, null));
+		
+		StepVerifier
+			.create(updated)
+			.expectNextMatches(u -> u.getEmail().equals("updatedemail@email.com"))
+			.verifyComplete();
 	}
 	
 	@Test
 	public void findById() {
-//        String uuid = UUID.randomUUID().toString();
-//        
-//		Mono<User> found = this.service
-//				.create(uuid, "test", "test", null, false, null, uuid, 0)
-//				.flatMap(u -> this.service.get(u.getId()));
-//		
-//		StepVerifier
-//			.create(found)
-//			.expectNextMatches(u -> StringUtils.hasText(u.getEmail()) && uuid.equalsIgnoreCase(u.getEmail()));
+		Mono<User> found = this.service
+				.create("Test", "Test", "email@email.com", "user12", "pass1234", null, null, null, 0, null)
+				.flatMap(u -> this.service.get(u.getId()));
+		
+		StepVerifier
+			.create(found)
+			.expectNextMatches(u ->  {
+				return StringUtils.hasText(u.getId()) && 
+						u.getFirstName().equals("Test") && 
+						u.getLastName().equals("Test") &&
+						u.getEmail().equals("email@email.com");
+			});
+	}
+	
+	@Test
+	public void changeUserPassword() {
+		PasswordEncoder encoder = new BCryptPasswordEncoder();
+		Mono<User> updated = this.service
+				.create("Test", "Test", "email@email.com", "user1234", "pass1234", null, null, null, 0, null)
+				.flatMap(u -> this.service.changeUserPassword(u.getUsername(), "pass1234", "updatedpass1234"));
+		
+		StepVerifier
+			.create(updated)
+			.expectNextMatches(u -> encoder.matches("updatedpass1234", u.getPassword()))
+			.verifyComplete();
 	}
 }

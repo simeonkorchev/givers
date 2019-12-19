@@ -16,6 +16,7 @@ import com.givers.repository.entity.Comment;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Log4j2
 @Service
@@ -61,16 +62,16 @@ public class CommentServiceImpl implements CommentService {
 				);
 	}
 	
-	public Mono<Comment> create(String content, String owner, String causeId) {
-		log.info("Creating comment with content ", content, " username ", owner, " and cause id: ", causeId);
+	public Mono<Comment> create(String content, String username, String causeId) {
+		log.info("Creating comment with content ", content, " username ", username, " and cause id: ", causeId);
 		return this.commentRepository
-				.save(new Comment(null, content, owner, causeId))
+				.save(new Comment(null, content, username, causeId))
 				.doOnSuccess(c -> {
-					log.info(c);
 					this.publisher.publishEvent(new CommentCreatedEvent(c));
 					this.causeRepository
 						.findById(causeId)
 						.switchIfEmpty(raiseIllegalState("Could not find cause with id: " + causeId))
+						.publishOn(Schedulers.parallel())
 						.subscribe(cause -> {
 							log.info("Found cause: "+cause);
 							cause.setCommentIds(appendIdToList(cause.getCommentIds(), c.getId()));
@@ -79,8 +80,9 @@ public class CommentServiceImpl implements CommentService {
 						});
 						
 					this.userRepository
-						.findByUsername(owner)
-						.switchIfEmpty(raiseIllegalState("Could not find user with username: " + owner))
+						.findByUsername(username.toLowerCase())
+						.switchIfEmpty(raiseIllegalState("Could not find user with username: " + username))
+						.publishOn(Schedulers.parallel())
 						.subscribe(user -> {
 							log.info("Found user: "+ user);
 							user.setCommentIds(appendIdToList(user.getCommentIds(), c.getId()));

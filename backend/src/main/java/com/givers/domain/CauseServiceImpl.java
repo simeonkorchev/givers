@@ -74,9 +74,9 @@ public final class CauseServiceImpl implements CauseService {
     			});
     }
     
-
 	public Flux<Cause> getUserParticipation(String ownerId) {
 		return this.all()
+				.filter(c -> c.getParticipantIds() != null)
 				.filter(cause -> 
 					containUsername(cause.getParticipantIds(), ownerId)
 				);
