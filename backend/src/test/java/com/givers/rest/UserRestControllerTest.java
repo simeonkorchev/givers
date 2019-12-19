@@ -72,19 +72,19 @@ public class UserRestControllerTest {
     		.thenReturn(Mono.just(new User("1", "A", "S", "D", null, null, null, null, null, 0, null)));
     	
     	WebTestClient
-		.bindToController(this.classUnderTest)
-		.build()
-		.get()
-		.uri("/users/1")
-		.accept(MediaType.APPLICATION_JSON_UTF8)
-		.exchange()
-		.expectStatus().isOk()
-		.expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
-		.expectBody()
-		.jsonPath("$.id").isEqualTo("1")
-		.jsonPath("$.email").isEqualTo("A")
-		.jsonPath("$.username").isEqualTo("S")
-		.jsonPath("$.firstName").isEqualTo("D");
+			.bindToController(this.classUnderTest)
+			.build()
+			.get()
+			.uri("/users/1")
+			.accept(MediaType.APPLICATION_JSON_UTF8)
+			.exchange()
+			.expectStatus().isOk()
+			.expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+			.expectBody()
+			.jsonPath("$.id").isEqualTo("1")
+			.jsonPath("$.email").isEqualTo("A")
+			.jsonPath("$.username").isEqualTo("S")
+			.jsonPath("$.firstName").isEqualTo("D");
     }
     
 	@Test
@@ -95,16 +95,16 @@ public class UserRestControllerTest {
     		.thenReturn(Mono.just(user));
 
     	WebTestClient
-		.bindToController(this.classUnderTest)
-		.build()
-		.post()
-		.uri("/users")
-		.body(BodyInserters.fromPublisher(Mono.just(user), User.class))
-		.accept(MediaType.APPLICATION_JSON_UTF8)
-		.exchange()
-		.expectStatus().isCreated()
-		.expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
-		.expectBody().isEmpty();
+			.bindToController(this.classUnderTest)
+			.build()
+			.post()
+			.uri("/users")
+			.body(BodyInserters.fromPublisher(Mono.just(user), User.class))
+			.accept(MediaType.APPLICATION_JSON_UTF8)
+			.exchange()
+			.expectStatus().isCreated()
+			.expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+			.expectBody().isEmpty();
     }
     
 	@Test
