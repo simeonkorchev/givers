@@ -1,4 +1,4 @@
-package com.givers.service;
+package com.givers.domain;
 
 import java.util.ArrayList;
 import java.util.List;

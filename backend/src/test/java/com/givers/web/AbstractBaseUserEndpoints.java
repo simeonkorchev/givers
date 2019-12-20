@@ -1,4 +1,4 @@
-package com.givers.rest;
+package com.givers.web;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

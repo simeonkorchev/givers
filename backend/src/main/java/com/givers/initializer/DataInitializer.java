@@ -14,9 +14,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.givers.domain.RecommendedCause;
 import com.givers.domain.core.CauseService;
 import com.givers.domain.core.CommentService;
+import com.givers.domain.core.RecommendedCause;
 import com.givers.domain.core.RecommenderService;
 import com.givers.repository.database.CauseRepository;
 import com.givers.repository.database.CollectorRepository;

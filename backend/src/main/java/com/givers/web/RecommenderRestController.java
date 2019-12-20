@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.givers.domain.RecommendedCause;
 import com.givers.domain.RecommenderServiceImpl;
+import com.givers.domain.core.RecommendedCause;
 import com.givers.domain.core.RecommenderService;
 
 import reactor.core.publisher.Flux;

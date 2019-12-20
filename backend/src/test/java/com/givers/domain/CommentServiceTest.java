@@ -1,4 +1,4 @@
-package com.givers.service;
+package com.givers.domain;
 
 import java.time.Duration;
 import java.util.UUID;

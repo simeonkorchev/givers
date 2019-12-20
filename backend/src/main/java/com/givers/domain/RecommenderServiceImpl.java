@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.givers.domain.core.RecommendedCause;
 import com.givers.domain.core.RecommenderService;
 
 import lombok.extern.log4j.Log4j2;

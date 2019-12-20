@@ -56,7 +56,8 @@ public class CommentRestController {
 		return Mono
 			.just(comment)
 			.flatMap(updated -> this.service.update(id, updated.getContent(), updated.getOwner(), updated.getCauseId()))
-			.map(r -> ResponseEntity.created(URI.create("/comments/id" + r.getId()))
+			.map(r -> ResponseEntity
+					.ok()
 					.contentType(this.mediaType)
 					.build());
 	}

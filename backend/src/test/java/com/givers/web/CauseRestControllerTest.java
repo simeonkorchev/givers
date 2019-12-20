@@ -1,4 +1,4 @@
-package com.givers.rest;
+package com.givers.web;
 
 import java.util.ArrayList;
 import java.util.List;
