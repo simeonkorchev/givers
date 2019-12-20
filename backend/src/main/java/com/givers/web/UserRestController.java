@@ -150,40 +150,40 @@ public class UserRestController {
 //        return "redirect:/updatePassword";
 //    }
     
-    private String validatePasswordResetToken(long userId, String token) {
-    	String userIdStr = String.valueOf(userId);
-    	this.passwordResetTokenService.get(userIdStr)
-    		.map(t -> {
-    			if (t == null || t.getUser().getId() != userIdStr ) {
-    				return "invalidToken";
-    			}
-    			final Calendar cal = Calendar.getInstance();
-    			if(t.getExpiryDate().getTime() - cal.getTime().getTime() <= 0 ) {
-    				return "expired";
-    			}
-    			final User user = t.getUser();
-    	        final Authentication auth = new UsernamePasswordAuthenticationToken(user, null, Arrays.asList(new SimpleGrantedAuthority("CHANGE_PASSWORD_PRIVILEGE")));
-    	        SecurityContextHolder.getContext().setAuthentication(auth);
-    	        return "";
-    		});
-		return "";
-	}
-
-	private SimpleMailMessage constructResetTokenEmail(
-    		  String contextPath, String token, User user) {
-    		    String url = contextPath + "/user/changePassword?id=" + 
-    		      user.getId() + "&token=" + token;
-    		    String message = "Visit the link from below in order to reset your password";
-    		    return constructEmail("Reset Password", message + " \r\n" + url, user);
-    }
-    		 
-	private SimpleMailMessage constructEmail(String subject, String body, 
-	  User user) {
-	    SimpleMailMessage email = new SimpleMailMessage();
-	    email.setSubject(subject);
-	    email.setText(body);
-	    email.setTo(user.getEmail());
-//        email.setFrom(env.getProperty("support.email"));
-	    return email;
-	}
+//    private String validatePasswordResetToken(long userId, String token) {
+//    	String userIdStr = String.valueOf(userId);
+//    	this.passwordResetTokenService.get(userIdStr)
+//    		.map(t -> {
+//    			if (t == null || t.getUser().getId() != userIdStr ) {
+//    				return "invalidToken";
+//    			}
+//    			final Calendar cal = Calendar.getInstance();
+//    			if(t.getExpiryDate().getTime() - cal.getTime().getTime() <= 0 ) {
+//    				return "expired";
+//    			}
+//    			final User user = t.getUser();
+//    	        final Authentication auth = new UsernamePasswordAuthenticationToken(user, null, Arrays.asList(new SimpleGrantedAuthority("CHANGE_PASSWORD_PRIVILEGE")));
+//    	        SecurityContextHolder.getContext().setAuthentication(auth);
+//    	        return "";
+//    		});
+//		return "";
+//	}
+//
+//	private SimpleMailMessage constructResetTokenEmail(
+//    		  String contextPath, String token, User user) {
+//    		    String url = contextPath + "/user/changePassword?id=" + 
+//    		      user.getId() + "&token=" + token;
+//    		    String message = "Visit the link from below in order to reset your password";
+//    		    return constructEmail("Reset Password", message + " \r\n" + url, user);
+//    }
+//    		 
+//	private SimpleMailMessage constructEmail(String subject, String body, 
+//	  User user) {
+//	    SimpleMailMessage email = new SimpleMailMessage();
+//	    email.setSubject(subject);
+//	    email.setText(body);
+//	    email.setTo(user.getEmail());
+////        email.setFrom(env.getProperty("support.email"));
+//	    return email;
+//	}
 }

@@ -3,6 +3,7 @@ package com.givers.service;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
@@ -13,6 +14,7 @@ import org.springframework.util.StringUtils;
 
 import com.givers.domain.UserServiceImpl;
 import com.givers.repository.database.UserRepository;
+import com.givers.repository.entity.Cause;
 import com.givers.repository.entity.User;
 
 import lombok.extern.log4j.Log4j2;
@@ -37,14 +39,20 @@ public class UserServiceTest {
 	public static void clearDbEntries() {
 		repository.deleteAll();	
 	}
+	
+	@BeforeEach
+	public void clearUsernames() {
+		repository.deleteAll().block();
+	}
 	  
 	@Test 
     public void getAll() {
+		log.info("Running: " + this.getClass().getName());
+		log.info("Executing getAll");
 		Flux<User> saved = repository.saveAll(Flux.just(new User(null, "Test", "Test", "user@bv.bg", "user", "pass1234", null, null, null, 0, null), new User(null, "Test2", "Test2", "test2@abv.bg", "test2", "test2", null, null, null, 0, null)));
 		
 		Flux<User> composite = this.service.all().thenMany(saved);
-		
-		Predicate<User> match = user -> saved.any(saveItem -> saveItem.getFirstName().equals(user.getFirstName())).block();
+		Predicate<User> match = c -> saved.any(saveItem -> saveItem.getEmail().equals(c.getEmail())).block();
 		StepVerifier
 			.create(composite)
 			.expectNextMatches(match)
@@ -54,6 +62,8 @@ public class UserServiceTest {
 
 	@Test
 	public void save() {
+		log.info("Executing save");
+
 		Mono<User> userMono = this.service.create("Test", "Test", "user", "user", "pass123", null, null, null, 0, null);
 		StepVerifier
 			.create(userMono)
@@ -63,6 +73,8 @@ public class UserServiceTest {
 	
 	@Test
 	public void delete() {
+		log.info("Executing delete");
+
 		String email = "test@test.com";
 		Mono<User> deleted = this.service
 				.create("Test", "Test", email, "user123", "pass1234", null, null, null, 0, null)
@@ -76,6 +88,8 @@ public class UserServiceTest {
 	
 	@Test
 	public void update() {
+		log.info("Executing update");
+
 		Mono<User> updated = this.service
 				.create("Test", "Test", "email@email.com", "user1234", "pass1234", null, null, null, 0, null)
 				.flatMap(u -> this.service.update(u.getId(),"Test", "Test", "updatedemail@email.com", "user", "pass1234", null, null, null, 0, null));
@@ -88,6 +102,8 @@ public class UserServiceTest {
 	
 	@Test
 	public void findById() {
+		log.info("Executing findById");
+
 		Mono<User> found = this.service
 				.create("Test", "Test", "email@email.com", "user12", "pass1234", null, null, null, 0, null)
 				.flatMap(u -> this.service.get(u.getId()));
@@ -104,6 +120,8 @@ public class UserServiceTest {
 	
 	@Test
 	public void changeUserPassword() {
+		log.info("Executing changeUserPassword");
+
 		PasswordEncoder encoder = new BCryptPasswordEncoder();
 		Mono<User> updated = this.service
 				.create("Test", "Test", "email@email.com", "user1234", "pass1234", null, null, null, 0, null)

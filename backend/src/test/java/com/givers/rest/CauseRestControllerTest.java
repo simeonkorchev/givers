@@ -32,8 +32,8 @@ public class CauseRestControllerTest {
 	@MockBean
 	private CauseRepository causeRepo;
 	
-	 @MockBean  
-	 private UserRepository userRepo;
+	@MockBean  
+	private UserRepository userRepo;
 	
 	private CauseRestController classUnderTest;
 
