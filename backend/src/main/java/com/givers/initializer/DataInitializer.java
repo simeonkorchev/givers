@@ -62,17 +62,13 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
 		this.causeRepo = causeRepo;
 		this.collectorRepo = collectorRepository;
 		this.citiesReader = new CitiesReader();
-		this.causesCount = isNullOrEmpty(causesCountConfig) ? DEFAULT_CAUSES_COUNT : Integer.parseInt(causesCountConfig);
-		this.logsCount = isNullOrEmpty(logsCountConfig) ? DEFAULT_LOGS_COUNT : Integer.parseInt(logsCountConfig);
-	}
-	
-	private static boolean isNullOrEmpty(String data) {
-		return data == null || data.isEmpty();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
+		this.causesCount = isNullOrEmpty(causesCountConfig) ? DEFAULT_CAUSES_COUNT : Integer.parseInt(causesCountConfig);
+		this.logsCount = isNullOrEmpty(logsCountConfig) ? DEFAULT_LOGS_COUNT : Integer.parseInt(logsCountConfig);
 		if(!this.shouldInitData.equalsIgnoreCase("true")) {
 			return;
 		}
@@ -135,5 +131,9 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
 				});
 			}	
 		});
+	}
+
+	private static boolean isNullOrEmpty(String data) {
+		return data == null || data.isEmpty();
 	}
 }
