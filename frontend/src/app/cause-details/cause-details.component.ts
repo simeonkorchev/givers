@@ -9,6 +9,7 @@ import { switchMap, map, concatMap } from 'rxjs/operators';
 import { pipe } from 'rxjs';
 import { CollectorService } from '../collector.service';
 import { EventType } from '../event-type.enum';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-cause-details',
@@ -33,6 +34,22 @@ export class CauseDetailsComponent implements OnInit  {
   ) { }
 
   ngOnInit() {
+    this.commentService
+    .connect()
+    .map(
+      (response: MessageEvent): Comment => {
+      let data = JSON.parse(response.data);
+      return new Comment(
+        data.id,
+        data.owner,
+        data.causeId,
+        data.content
+      )
+    })
+    .filter(comment => comment.causeId == this.cause.id)
+    .subscribe(comment => {
+      this.alreadyMadeComments.push(comment);
+    });
     this.route.params
       .map(params => params['id'])
       .pipe(
@@ -70,7 +87,6 @@ export class CauseDetailsComponent implements OnInit  {
         this.alreadyMadeComments.push(found);
       });
     });
-    console.log(this.alreadyMadeComments);
   }
 
   getImage(photoPath: string): string {
@@ -99,6 +115,7 @@ export class CauseDetailsComponent implements OnInit  {
      this.commentService.save(c).subscribe(
        res => {
          this.alertService.success("Comment successfull");
+         this.comment = "";
        }, err => {
          this.alertService.error(err);
        }

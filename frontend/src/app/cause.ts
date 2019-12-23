@@ -7,7 +7,8 @@ export class Cause {
     name: string;
     location: string;
     description: string;
-    time: Time;
+    date: Date;
+    time: number;
     commentIds: Array<string>;
     participantIds: Array<string>;
     causeType: string;

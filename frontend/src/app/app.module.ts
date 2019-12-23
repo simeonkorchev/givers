@@ -16,7 +16,7 @@ import { AlertComponentComponent } from './alert-component/alert-component.compo
 import { AlertService } from './alert-service';
 import { AuthGuard } from './guards/auth.guard';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { faUsersCog, faPowerOff, faPlusCircle, faHandHoldingHeart } from '@fortawesome/free-solid-svg-icons';
+import { faUsersCog, faPowerOff, faPlusCircle, faHandHoldingHeart, faStar, faMapMarkedAlt, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule, FaIconLibrary, } from '@fortawesome/angular-fontawesome';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { MatDatepickerModule, MatNativeDateModule, MatInputModule } from '@angular/material';
@@ -77,6 +77,6 @@ let routes = [
 
 export class AppModule {
   constructor(library: FaIconLibrary) {
-    library.addIcons(faUsersCog, faPowerOff, faPlusCircle, faHandHoldingHeart);
+    library.addIcons(faCalendarAlt, faMapMarkedAlt, faStar, faUsersCog, faPowerOff, faPlusCircle, faHandHoldingHeart);
   }
 }

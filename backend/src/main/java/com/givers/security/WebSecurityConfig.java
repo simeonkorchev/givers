@@ -23,7 +23,8 @@ public class WebSecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
             "/login/**",
-            "/users/**"
+            "/users/**",
+            "/ws/comments"
     };
 
     public WebSecurityConfig(ReactiveUserDetailsServiceImpl reactiveUserDetailsService,

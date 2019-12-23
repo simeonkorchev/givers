@@ -46,6 +46,7 @@ export class CauseService {
   }
 
   public save(cause: Cause) {
+    cause.time =  cause.date.getTime();
     cause.ownerId = localStorage.getItem('username');
     return this.http.post<Cause>(this.causesUrl, cause, {headers: this.headers});
   }

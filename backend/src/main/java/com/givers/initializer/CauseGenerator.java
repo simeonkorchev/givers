@@ -2,8 +2,12 @@ package com.givers.initializer;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -13,8 +17,8 @@ import com.givers.repository.entity.User;
 
 public class CauseGenerator implements Generator<Cause>, Supplier<String> {
 	private final Random random = new Random();
-	private static final long MIN_DAY = LocalDate.of(2020, 3, 3).toEpochDay();
-	private static final long MAX_DAY = LocalDate.of(2020, 12, 30).toEpochDay();
+	private static final long MIN_DAY = new GregorianCalendar(2020, Calendar.MARCH, 1).getTime().getTime() / 1000; 
+	private static final long MAX_DAY = new GregorianCalendar(2020, Calendar.DECEMBER, 30).getTime().getTime() / 1000;
 	private final List<User> owners;
 
 	private static final String ADULTS_TITLE = "Нека помогнем на възрастен човек в ";
@@ -43,7 +47,7 @@ public class CauseGenerator implements Generator<Cause>, Supplier<String> {
 			System.out.println("Random owner id: " + ownerId);
 			System.out.println("Random cause type: " + causeType);
 			System.out.println("Random location: " + location);
-			System.out.println("Random date: " + LocalDate.ofEpochDay(time));
+			System.out.println("Random date: " + new Date(time));
 			System.out.println("The seconds are: "+ time);
 			String title = "";
 			switch (causeType) {
@@ -78,8 +82,9 @@ public class CauseGenerator implements Generator<Cause>, Supplier<String> {
 	}
 
 	private Long getRandomDate() {
-		// to get the day use: LocalDate.ofEpochDay(long);
-		return MIN_DAY + random.nextInt((int) (MAX_DAY - MIN_DAY));
+		return ThreadLocalRandom
+			      .current()
+			      .nextLong(MIN_DAY, MAX_DAY);
 	}
 
 	@Override
