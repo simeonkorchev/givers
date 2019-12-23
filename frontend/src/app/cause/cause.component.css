@@ -1,11 +1,25 @@
-
-mat-form-field {
-    margin-right: 12px;
+.form-wrapper {
+    max-width: 40%;
+    margin: 100px auto;
+    padding: 20px 30px;
+    background-color: #f2fbff;
+    border-radius: 15px;
+    border: 2px solid grey;
 }
-
-.form-group .form-control {
-    width: 440px;
-    max-width: 100%;
-    margin-right: 5px;
-    background-color: #fafbfc;
+.form-wrapper h2 {
+    text-align: center;
+}
+.form-group {
+    padding: 10px 5px;
+}
+.form-group .btn-primary{
+    padding: 10px 20px;
+    font-size: large;
+    color: #f2fbff;
+    font-weight: bold;
+}
+.form-group .btn-link{
+    display: inline-block;
+    /* float: right; */
+    padding: 10px 15px;
 }
