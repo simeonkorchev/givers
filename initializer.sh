@@ -42,6 +42,8 @@ configure_properties() {
     echo "init.data=${init_data}" >> "$SPRING_CONF_FILE"
     echo "causes.count=${causes_count}" >> "$SPRING_CONF_FILE"
     echo "logs.count=${logs_count}" >> "$SPRING_CONF_FILE"
+    echo "springbootwebfluxjjwt.jjwt.secret=${jwt_secret}" >> "$SPRING_CONF_FILE"
+    echo "springbootwebfluxjjwt.jjwt.expiration=${jwt_expiration}" >> "$SPRING_CONF_FILE"
 	cat <<EOF > init-mongo.js
 db.createUser({
 	user: "$db_user",
