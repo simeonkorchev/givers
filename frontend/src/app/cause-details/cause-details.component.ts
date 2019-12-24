@@ -1,15 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Cause } from '../cause';
 import { CauseService } from '../cause-service.service';
+import { UserService } from '../user-service.service';
 import { AlertService } from '../alert-service';
 import { CommentService } from '../comment-service.service';
 import { Comment } from '../comment';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap, map, concatMap } from 'rxjs/operators';
-import { pipe } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { CollectorService } from '../collector.service';
 import { EventType } from '../event-type.enum';
-import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-cause-details',
@@ -22,14 +21,13 @@ export class CauseDetailsComponent implements OnInit  {
   isLoaded = false;
   comment= "";
   alreadyMadeComments: Array<Comment> = [];
-  private sub: any;
-  private id: string;
 
   constructor(
     private causeService: CauseService,
     private alertService: AlertService,
     private commentService: CommentService,
     private collectorService: CollectorService,
+    private userService: UserService,
     private route: ActivatedRoute
   ) { }
 
@@ -39,6 +37,8 @@ export class CauseDetailsComponent implements OnInit  {
     .map(
       (response: MessageEvent): Comment => {
       let data = JSON.parse(response.data);
+      console.log("Received data:");
+      console.log(data);
       return new Comment(
         data.id,
         data.owner,
@@ -60,6 +60,7 @@ export class CauseDetailsComponent implements OnInit  {
         })
       ).subscribe(causes => {
         this.cause = causes[0];
+        console.log(this.cause);
         this.collectorService.collect(localStorage.getItem('username'), this.cause.id, EventType.CAUSE_DETAILS_VIEWED, this.cause.name);
         this.cause.commentIds.forEach(id => {
           this.commentService.findById(id)
@@ -114,6 +115,7 @@ export class CauseDetailsComponent implements OnInit  {
      var c = new Comment(null, localStorage.getItem('username'), this.cause.id, this.comment);
      this.commentService.save(c).subscribe(
        res => {
+         this.collectorService.collect(localStorage.getItem('username'), this.cause.id, EventType.COMMENT_CREATED, this.cause.name);
          this.alertService.success("Comment successfull");
          this.comment = "";
        }, err => {

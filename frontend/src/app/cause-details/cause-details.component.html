@@ -10,17 +10,22 @@
                         <button type="button" class="btn colors-btn" (click)="attendToCause()"> <fa-icon icon="hand-holding-heart"></fa-icon> Attend </button>
                     </div>
                   </div>
-                  
-                  <div>
-                      <ol>
-                          <span *ngFor="let comment of alreadyMadeComments">
-                            <tr> {{ comment.content }}</tr>
-                          </span>
-                          <div class="add-comment">
-                            <input class="comment-input form-control" type="text" [(ngModel)]="comment" placeholder="Add Comment..."/>
-                            <button class="btn" (click)="addComment()">Comment</button>
-                          </div>
-                      </ol>
-                  </div>
+        </section>
+        <section id="comments" class="body">
+          <header>
+            <h2>Comments</h2>
+          </header>
+            <ul>
+                <li *ngFor="let comment of alreadyMadeComments">
+                  <header>
+                    <h1> {{ comment.content }}</h1>
+                    <h1>{{ comment.owner }}</h1>
+                  </header>
+                </li>
+                <div class="add-comment">
+                  <input class="comment-input form-control" type="text" [(ngModel)]="comment" placeholder="Add Comment..."/>
+                  <button class="btn" (click)="addComment()">Comment</button>
+                </div>
+              </ul>
         </section>
       </div>

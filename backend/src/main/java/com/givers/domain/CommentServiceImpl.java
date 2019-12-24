@@ -67,6 +67,7 @@ public class CommentServiceImpl implements CommentService {
 		return this.commentRepository
 				.save(new Comment(null, content, username, causeId))
 				.doOnSuccess(c -> {
+					log.info("Publishing event: for comment" + c.toString());
 					this.publisher.publishEvent(new CommentCreatedEvent(c));
 					this.causeRepository
 						.findById(causeId)

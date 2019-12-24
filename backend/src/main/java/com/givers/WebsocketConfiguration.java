@@ -35,7 +35,7 @@ class WebSocketConfiguration {
     HandlerMapping handlerMapping(WebSocketHandler wsh) {
         return new SimpleUrlHandlerMapping() {
             {
-                // <3>
+                log.info("Setting url");
                 setUrlMap(Collections.singletonMap("/ws/comments", wsh));
                 setOrder(10);
             }
@@ -50,20 +50,19 @@ class WebSocketConfiguration {
 
     @Bean
     WebSocketHandler webSocketHandler(
-        ObjectMapper objectMapper, // <5>
-        CommentCreatedEventPublisher eventPublisher // <6>
+        ObjectMapper objectMapper,
+        CommentCreatedEventPublisher eventPublisher
     ) {
 
         Flux<CommentCreatedEvent> publish = Flux
             .create(eventPublisher)
-            .share(); // <7>
+            .share();
 
         return session -> {
 
             Flux<WebSocketMessage> messageFlux = publish
                 .map(evt -> {
                     try {
-                        // <8>
                         return objectMapper.writeValueAsString(evt.getSource());
                     }
                     catch (JsonProcessingException e) {
@@ -71,11 +70,11 @@ class WebSocketConfiguration {
                     }
                 })
                 .map(str -> {
-                    log.info("sending " + str);
+                    log.info("Sending " + str);
                     return session.textMessage(str);
                 });
 
-            return session.send(messageFlux); // <9>
+            return session.send(messageFlux);
         };
     }
 

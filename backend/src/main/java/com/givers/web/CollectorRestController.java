@@ -23,7 +23,6 @@ import reactor.core.publisher.Mono;
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping(value = "/collect", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CollectorRestController {
-	
 	private final CollectorService service;
 	private final MediaType mediaType = MediaType.APPLICATION_JSON_UTF8;
 	
@@ -33,10 +32,11 @@ public class CollectorRestController {
 	
 	@PostMapping
 	@PreAuthorize("hasRole('USER')")
-	public Mono<ResponseEntity<Log>> collectUserBehavior(@RequestBody Log log) {
+	public Mono<ResponseEntity<Log>> collectUserBehavior(@RequestBody Log l) {
+		log.info("Creating log: " + l.toString());
 		return this.service
-				.create(log.getUsername(), log.getCauseId(), log.getEventType(), log.getCauseName())
-				.map(l -> ResponseEntity.created(URI.create("/collect/" + l.getId()))
+				.create(l.getUsername(), l.getCauseId(), l.getEventType(), l.getCauseName())
+				.map(lg -> ResponseEntity.created(URI.create("/collect/" + lg.getId()))
 						.contentType(mediaType)
 						.build());	
 	}

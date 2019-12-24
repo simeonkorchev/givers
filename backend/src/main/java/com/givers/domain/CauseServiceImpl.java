@@ -102,6 +102,7 @@ public final class CauseServiceImpl implements CauseService {
 					this.userRepository.save(user).subscribe();
 				})
 				.map(user -> {
+					log.info("Updating cause participant ids..");
 					cause.setParticipantIds(appendIdToList(cause.getParticipantIds(), user.getId()));
 					return user;
 				})
