@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+
 readonly CONFIG_FILE=".env"
 readonly SPRING_CONF_FILE="backend/src/main/resources/application.properties"
 
@@ -12,6 +13,7 @@ configure_properties() {
 	local auth_source
     local jwt_secret
     local jwt_expiration
+    local images_mount
 
 	while IFS="=" read -r key value; do
       case "$key" in
@@ -29,6 +31,8 @@ configure_properties() {
         "INIT_DATA") init_data="$value" ;;
         "LOGS_COUNT") logs_count="$value" ;;
         "CAUSES_COUNT") causes_count="$value" ;;
+        "IMAGES_MOUNT") images_mount="$value" ;;
+        "IMAGES_PATH") images_path="$value" ;;
       esac
 	done < "$CONFIG_FILE"
 
@@ -44,6 +48,7 @@ configure_properties() {
     echo "logs.count=${logs_count}" >> "$SPRING_CONF_FILE"
     echo "springbootwebfluxjjwt.jjwt.secret=${jwt_secret}" >> "$SPRING_CONF_FILE"
     echo "springbootwebfluxjjwt.jjwt.expiration=${jwt_expiration}" >> "$SPRING_CONF_FILE"
+    echo "images.mount=${images_mount}" >> "$SPRING_CONF_FILE"
 	cat <<EOF > init-mongo.js
 db.createUser({
 	user: "$db_user",
@@ -67,7 +72,8 @@ EOF
     cat <<EOF > frontend/src/environments/environment.ts
 export const environment = {
   production: false,
-  backendUrl: "http://localhost:${backend_port}"
+  backendUrl: "http://localhost:${backend_port}",
+  imagesMount: "${images_path}"
 };
 EOF
 }

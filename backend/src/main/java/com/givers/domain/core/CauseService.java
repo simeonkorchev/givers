@@ -11,7 +11,7 @@ public interface CauseService {
 
 	Flux<Cause> all(); 
 	Mono<Cause> get(String id);
-	Flux<Cause> getByOwnerId(String ownerId);
+	Flux<Cause> getByOwner(String owner);
 	Mono<Cause> update(
 			String id, 
 			String name,

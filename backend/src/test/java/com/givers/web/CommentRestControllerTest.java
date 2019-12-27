@@ -143,7 +143,7 @@ public class CommentRestControllerTest {
     public void create() {
 		Comment comment = new Comment("1", "Test comment", "1", "3");
 		Cause cause = new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null);
-		User user = new User("1", "A", "S", "D", "F", "G", null, null, null, 0, null);
+		User user = new User("1", "A", "S", "D", "F", "G", null, null, null, null, 0, null);
 		
 		Mockito
 		.when(this.repository.save(Mockito.any(Comment.class)))

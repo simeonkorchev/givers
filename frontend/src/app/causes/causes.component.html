@@ -10,17 +10,17 @@
       <nav>
         <ul>
           <li><button type="button" [routerLink]="['/cause']">
-              <fa-icon icon="plus-circle"></fa-icon> New
+              <fa-icon icon="plus-circle"></fa-icon> Създай нова кауза
             </button></li>
           <li><button type="button" [routerLink]="['/user']">
-              <fa-icon icon="users-cog"></fa-icon> Profile
+              <fa-icon icon="users-cog"></fa-icon> Профил
             </button></li>
           <li><button (click)="recommend()">
-              <fa-icon icon="star"></fa-icon> Recomended For Me
+              <fa-icon icon="star"></fa-icon> Препоръчани каузи
             </button>
           </li>
           <li><button (click)="logout()" [routerLink]="['/login']">
-              <fa-icon icon="power-off"></fa-icon> Logout
+              <fa-icon icon="power-off"></fa-icon> Изход
             </button>
           </li>
         </ul>
@@ -34,17 +34,17 @@
         <span *ngFor="let entry of causes | async">
           <li class="prod-teaser">
             <div class="prod-teaser-content">
-              <img [src]="getImage(entry.photoPath)" width="270" height="246"/>
+              <img [src]="getImage(entry)" width="270" height="246"/>
               <h6 class="prod-teaser-content-title">{{ entry.name }}</h6>
               <h6 class="prod-teaser-content-title"><fa-icon icon="calendar-alt"></fa-icon> {{ entry.time * 1000 | date:'yyyy-MM-dd'}}</h6>
               <h6 class="prod-teaser-content-title"> <fa-icon icon="map-marked-alt"></fa-icon>  {{ entry.location }}</h6>
-              <h6 class="prod-teaser-content-title">Attendance: {{ entry.participantIds?.length }}</h6>
-              <h6 class="prod-teaser-content-title">Comments: {{ entry.commentIds?.length }}</h6>
+              <h6 class="prod-teaser-content-title">Участници: {{ entry.participantIds?.length }}</h6>
+              <h6 class="prod-teaser-content-title">Коментари: {{ entry.commentIds?.length }}</h6>
               <div>
-                  <button type="button" class="btn colors-btn" (click)="attendToCause(entry)"> <fa-icon icon="hand-holding-heart"></fa-icon> Attend </button>
+                  <button type="button" class="btn colors-btn" (click)="attendToCause(entry)"> <fa-icon icon="hand-holding-heart"></fa-icon> Участвай </button>
               </div>
               <div>
-                <button type="button" class="btn colors-btn" (click)="goToCommentDetails(entry)"> See more </button>
+                <button type="button" class="btn colors-btn" (click)="goToCommentDetails(entry)"> Виж повече </button>
               </div>
             </div>
           </li>

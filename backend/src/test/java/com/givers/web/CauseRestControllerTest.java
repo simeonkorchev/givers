@@ -64,7 +64,7 @@ public class CauseRestControllerTest {
     		.expectBody()
     		.jsonPath("$.[0].id").isEqualTo("1")
     		.jsonPath("$.[0].name").isEqualTo("Testname1")
-    		.jsonPath("$.[0].ownerId").isEqualTo("testowner1");
+    		.jsonPath("$.[0].owner").isEqualTo("testowner1");
     }
 	
     @Test
@@ -85,13 +85,13 @@ public class CauseRestControllerTest {
 		.expectBody()
 		.jsonPath("$.id").isEqualTo("1")
 		.jsonPath("$.name").isEqualTo("Testname1")
-		.jsonPath("$.ownerId").isEqualTo("testowner1");
+		.jsonPath("$.owner").isEqualTo("testowner1");
     }
     
     @Test
     public void getOwnCauses() {
     	Mockito
-    		.when(this.causeRepo.findByOwnerId(Mockito.anyString()))
+    		.when(this.causeRepo.findByOwner(Mockito.anyString()))
     		.thenReturn(Flux.just(new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null)));
     	
     	WebTestClient
@@ -106,7 +106,7 @@ public class CauseRestControllerTest {
 		.expectBody()
 		.jsonPath("$.[0].id").isEqualTo("1")
 		.jsonPath("$.[0].name").isEqualTo("Testname1")
-		.jsonPath("$.[0].ownerId").isEqualTo("testowner1");
+		.jsonPath("$.[0].owner").isEqualTo("testowner1");
     }
     
     @Test
@@ -131,7 +131,7 @@ public class CauseRestControllerTest {
 			.expectBody()
 			.jsonPath("$.[0].id").isEqualTo("1")
 			.jsonPath("$.[0].name").isEqualTo("Testname1")
-			.jsonPath("$.[0].ownerId").isEqualTo("testowner1");
+			.jsonPath("$.[0].owner").isEqualTo("testowner1");
     }
     
 	@Test
@@ -155,7 +155,7 @@ public class CauseRestControllerTest {
 		.expectBody()
 		.jsonPath("$.id").isEqualTo("1")
 		.jsonPath("$.name").isEqualTo("Testname1")
-		.jsonPath("$.ownerId").isEqualTo("testowner1");
+		.jsonPath("$.owner").isEqualTo("testowner1");
 	}
 	
 	@Test
@@ -183,7 +183,7 @@ public class CauseRestControllerTest {
 	@Test
     public void create() {
 		Cause cause = new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null);
-		User user = new User("1", "A", "S", "D", "F", "G", null, null, null, 0, null);
+		User user = new User("1", "A", "S", "D", "F", "G", null, null, null, null, 0, null);
 		
 		Mockito
 			.when(this.causeRepo.save(Mockito.any(Cause.class)))
@@ -193,7 +193,7 @@ public class CauseRestControllerTest {
     		.when(this.userRepo.save(Mockito.any(User.class)))
     		.thenReturn(Mono.just(user));
     	Mockito
-		.when(this.userRepo.findById(Mockito.anyString()))
+		.when(this.userRepo.findByUsername(Mockito.anyString()))
 		.thenReturn(Mono.just(user));
 
     	WebTestClient
@@ -212,7 +212,7 @@ public class CauseRestControllerTest {
 	@Test
     public void attendToCause() {
 		Cause cause = new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null);
-		User user = new User("1", "A", "username", "D", "F", "G", null, null, null, 0, null);
+		User user = new User("1", "A", "username", "D", "F", "G", null, null, null, null, 0, null);
 		
 		Mockito
 			.when(this.causeRepo.save(Mockito.any(Cause.class)))

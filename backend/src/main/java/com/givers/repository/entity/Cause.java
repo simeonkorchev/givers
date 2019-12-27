@@ -17,7 +17,7 @@ public class Cause {
 	@Id
 	private String id;
 	private String name;
-	private String ownerId;
+	private String owner;
 	private String location;
 	private String description;
 	private String causeType;

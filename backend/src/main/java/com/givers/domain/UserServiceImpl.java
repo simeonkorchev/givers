@@ -45,10 +45,10 @@ public class UserServiceImpl implements UserService {
 		return this.userRepository.findByEmail(email.toLowerCase());
 	}
 	
-	public Mono<User> update(String id, String firstName, String lastName, String email, String username, String password, List<String> causes, List<String> commentIds, String photoPath, int honor, List<Authority> authorities) {
+	public Mono<User> update(String id, String firstName, String lastName, String email, String username, String password, List<String> involvedCauses, List<String> ownCauses, List<String> commentIds, String photoPath, int honor, List<Authority> authorities) {
 		return this.userRepository
 				.findById(id)
-				.map(u -> new User(id, email.toLowerCase(), username.toLowerCase(), firstName, lastName, password, causes, commentIds, photoPath, honor, authorities))
+				.map(u -> new User(id, email.toLowerCase(), username.toLowerCase(), firstName, lastName, password, involvedCauses, ownCauses, commentIds, photoPath, honor, authorities))
 				.flatMap(this.userRepository::save);
 	}
 	
@@ -61,12 +61,12 @@ public class UserServiceImpl implements UserService {
 				);
 	}
 	
-	public Mono<User> create(String firstName, String lastName, String email, String username, String password, List<String> causes, List<String> commentIds, String photoPath, int honor, List<Authority> authorities)
+	public Mono<User> create(String firstName, String lastName, String email, String username, String password, List<String> involvedCauses, List<String> ownCauses, List<String> commentIds, String photoPath, int honor, List<Authority> authorities)
 			{
 		String encodedPwd = encoder.encode(password);
-		log.info("Creating user: " + new User(null, email.toLowerCase(), username.toLowerCase(), firstName, lastName, encodedPwd, causes, commentIds, photoPath,honor, authorities));
+		log.info("Creating user: " + new User(null, email.toLowerCase(), username.toLowerCase(), firstName, lastName, encodedPwd, involvedCauses, ownCauses, commentIds, photoPath,honor, authorities));
 		return this.userRepository
-				.save(new User(null, email.toLowerCase(), username.toLowerCase(), firstName, lastName, encodedPwd, causes, commentIds, photoPath,honor, authorities));
+				.save(new User(null, email.toLowerCase(), username.toLowerCase(), firstName, lastName, encodedPwd, involvedCauses, ownCauses, commentIds, photoPath,honor, authorities));
 				//.doOnSuccess(user -> this.publisher.publishEvent(new UserCreatedEvent(user)));
 	}
 	
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
 			.switchIfEmpty(Mono.defer(this::raiseBadCredentials))
 			.filter(u -> this.encoder.matches(oldPassword, u.getPassword()))
 			.switchIfEmpty(Mono.defer(this::raiseBadCredentials))
-			.map(u -> new User(u.getId(), u.getEmail(), u.getUsername(), u.getFirstName(), u.getLastName(), this.encoder.encode(newPassword), u.getCauses(), u.getCommentIds(),u.getPhotoPath(), u.getHonor(), u.getAuthorities()))
+			.map(u -> new User(u.getId(), u.getEmail(), u.getUsername(), u.getFirstName(), u.getLastName(), this.encoder.encode(newPassword), u.getCauses(), u.getOwnCauses(), u.getCommentIds(),u.getPhotoPath(), u.getHonor(), u.getAuthorities()))
 			.flatMap(this.userRepository::save);
 	}
 

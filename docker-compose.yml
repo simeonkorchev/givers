@@ -3,8 +3,9 @@ services:
   frontend:
     build: ./frontend
     volumes:
-      - ./frontend/:/usr/src/app/
-      - /usr/src/app/node_modules
+      - ./frontend/:${APP_MOUNT}
+      - ${APP_MOUNT}/node_modules
+      - /tmp/appdata:${IMAGES_MOUNT}
     depends_on:
       - backend
     ports:
@@ -14,7 +15,8 @@ services:
     build: ./backend
     working_dir: /usr/src/app
     volumes:
-      - ./backend/:/usr/src/app
+      - ./backend/:${APP_MOUNT}
+      - /tmp/appdata:${IMAGES_MOUNT}
     command: mvn clean spring-boot:run -DskipTests
     depends_on:
       - database

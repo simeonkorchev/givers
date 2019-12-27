@@ -108,6 +108,7 @@ def read_mongo(db, collection, query={}, host='localhost', port=27017, username=
 
 @app.route('/api/v1/recommend/<username>', methods=['GET'])
 def make_recommendation(username):
+  train_model()
   if not username in user_to_cat_code:
       response = Response (
           mimetype="application/json",

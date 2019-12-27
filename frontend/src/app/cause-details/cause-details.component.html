@@ -7,13 +7,13 @@
                     <h4 class="prod-content-date"><fa-icon icon="calendar-alt"></fa-icon> {{ cause?.time * 1000 | date:'yyyy-MM-dd'}}</h4>
                     <h4 class="prod-content-location"><fa-icon icon="map-marked-alt"></fa-icon>  {{ cause?.location }}</h4>
                     <div>
-                        <button type="button" class="btn colors-btn" (click)="attendToCause()"> <fa-icon icon="hand-holding-heart"></fa-icon> Attend </button>
+                        <button type="button" class="btn colors-btn" (click)="attendToCause()"> <fa-icon icon="hand-holding-heart"></fa-icon> Участвай </button>
                     </div>
                   </div>
         </section>
         <section id="comments" class="body">
           <header>
-            <h2>Comments</h2>
+            <h2>Коментари</h2>
           </header>
             <ul>
                 <li *ngFor="let comment of alreadyMadeComments">
@@ -24,7 +24,7 @@
                 </li>
                 <div class="add-comment">
                   <input class="comment-input form-control" type="text" [(ngModel)]="comment" placeholder="Add Comment..."/>
-                  <button class="btn" (click)="addComment()">Comment</button>
+                  <button class="btn" (click)="addComment()">Коментирай</button>
                 </div>
               </ul>
         </section>

@@ -102,9 +102,9 @@ export class CauseDetailsComponent implements OnInit  {
     this.causeService.attendToCause(this.cause, username)
       .subscribe(c => {
         this.collectorService.collect(username, this.cause.id, EventType.ATTEND, this.cause.name);
-        this.alertService.success("Congratulations for getting involved!");
+        this.alertService.success("Поздравления за участието!");
       }, err => {
-        this.alertService.error("Something went wrong: " + err);
+        this.alertService.error("Случи се грешка: " + err);
       })
   }
 
@@ -116,7 +116,7 @@ export class CauseDetailsComponent implements OnInit  {
      this.commentService.save(c).subscribe(
        res => {
          this.collectorService.collect(localStorage.getItem('username'), this.cause.id, EventType.COMMENT_CREATED, this.cause.name);
-         this.alertService.success("Comment successfull");
+         this.alertService.success("Успешно коментира каузата");
          this.comment = "";
        }, err => {
          this.alertService.error(err);

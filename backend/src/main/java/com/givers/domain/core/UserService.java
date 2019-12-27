@@ -13,8 +13,8 @@ public interface UserService {
 	Mono<User> get(String id);
 	Mono<User> getByUsername(String username);
 	Mono<User> getByEmail(String email);
-	Mono<User> update(String id, String firstName, String lastName, String email, String username, String password, List<String> causes, List<String> commentIds, String photoPath, int honor, List<Authority> authorities);
+	Mono<User> update(String id, String firstName, String lastName, String email, String username, String password, List<String> involvedCauses, List<String> ownCauses, List<String> commentIds, String photoPath, int honor, List<Authority> authorities);
 	Mono<User> delete(String id);
-	Mono<User> create(String firstName, String lastName, String email, String username, String password, List<String> causes, List<String> commentIds, String photoPath, int honor, List<Authority> authorities);
+	Mono<User> create(String firstName, String lastName, String email, String username, String password, List<String> involvedCauses, List<String> ownCauses, List<String> commentIds, String photoPath, int honor, List<Authority> authorities);
 	Mono<User> changeUserPassword(String username, String oldPassword, String newPassword);
 }

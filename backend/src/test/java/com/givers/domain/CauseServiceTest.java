@@ -91,13 +91,13 @@ public class CauseServiceTest {
 				.flatMap(u -> this.service.update(u.getId(), "updatedCaseName", "updatedTest", "updatedtestlocation", "updatedtestdescription", null, 123L, null, null));
 		StepVerifier
 			.create(updated)
-			.expectNextMatches(u -> u.getOwnerId().equalsIgnoreCase("updatedTest"))
+			.expectNextMatches(u -> u.getOwner().equalsIgnoreCase("updatedTest"))
 			.verifyComplete();
 	}
 	
 	@Test
 	public void getById() {
-		User user = this.userRepo.save(new User(null, "Test@abv.bg", "username", "FirstName", "LastName", "pass1234", null, null, null, 0, null)).block();
+		User user = this.userRepo.save(new User(null, "Test@abv.bg", "username", "FirstName", "LastName", "pass1234", null, null, null, null, 0, null)).block();
 		String random = UUID.randomUUID().toString();
 		Mono<Cause> deleted = this.service
 				.create(random, user.getId(), null, null, null, null, null, null)
@@ -111,7 +111,7 @@ public class CauseServiceTest {
 	
 	@Test
 	public void attendToCause() throws InterruptedException {
-		User user = this.userRepo.save(new User(null, "Test@abv.bg", "username", "FirstName", "LastName", "pass1234", null, null, null, 0, null)).block();
+		User user = this.userRepo.save(new User(null, "Test@abv.bg", "username", "FirstName", "LastName", "pass1234", null, null, null, null, 0, null)).block();
 		Cause createdCause = this.service
 				.create("TestName", user.getId(), null, null, null, null, null, null)
 				.flatMap(c -> this.service.attendToCause(c, user.getUsername())).block();
@@ -125,7 +125,7 @@ public class CauseServiceTest {
 	
 	@Test
 	public void getUserParticipation() throws InterruptedException {
-		User user = this.userRepo.save(new User(null, "Test@abv.bg", "username12345", "FirstName", "LastName", "pass1234", null, null, null, 0, null)).block();
+		User user = this.userRepo.save(new User(null, "Test@abv.bg", "username12345", "FirstName", "LastName", "pass1234", null, null, null, null, 0, null)).block();
 		List<String> ids = new ArrayList<>();
 		ids.add(user.getId());
 

@@ -1,71 +1,70 @@
 <div class="form-wrapper">
-    <h2 style="margin: 0">Register</h2>
+    <h2 style="margin: 0">Регистрация</h2>
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
-            <label for="email">Email</label>
+            <label for="email">Е-мейл</label>
             <input type="email" class="form-control" id="email" [ngClass]="{ 'is-invalid': submitted && f.email.errors }"
                 formControlName="email" name="email" placeholder="giver@givers.com"
                 pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
             <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
                 <div *ngIf="f.email.errors.required">
-                    <font color="red">Email is required</font>
+                    <font color="red">Е-мейла е задължителен</font>
                 </div>
             </div>
             <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
                 <div *ngIf="f.email.errors.pattern">
-                    <font color="red">Please provide a valid email</font>
+                    <font color="red">Моля, въведете е-мейл</font>
                 </div>
             </div>
         </div>
         <div class="form-group">
-            <label for="firstName">First Name</label>
+            <label for="firstName">Име</label>
             <input type="text" formControlName="firstName" class="form-control"
                 [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
             <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
                 <div *ngIf="f.firstName.errors.required">
-                    <font color="red">First Name is required</font>
+                    <font color="red">Името е задължително</font>
                 </div>
             </div>
         </div>
         <div class="form-group">
-            <label for="lastName">Last Name</label>
+            <label for="lastName">Фамилия</label>
             <input type="text" formControlName="lastName" class="form-control"
                 [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
             <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
                 <div *ngIf="f.lastName.errors.required">
-                    <font color="red">Last Name is required</font>
+                    <font color="red">Фамилията е задължителна</font>
                 </div>
             </div>
         </div>
         <div class="form-group">
-            <label for="username">Username</label>
+            <label for="username">Потребителско име</label>
             <input type="text" formControlName="username" class="form-control"
                 [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
             <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
                 <div *ngIf="f.username.errors.required">
-                    <font color="red">Username is required</font>
+                    <font color="red">Потребителското име е задължително</font>
                 </div>
             </div>
         </div>
         <div class="form-group">
-            <label for="password">Password</label>
+            <label for="password">Парола</label>
             <input type="password" formControlName="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
                 class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
             <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
                 <div *ngIf="f.password.errors.required">
-                    <font color="red">Password is required</font>
+                    <font color="red">Паролата е задължителна</font>
                 </div>
                 <div *ngIf="f.password.errors.pattern">
-                    <font color="red">Password must contain one number and one uppercase and lowercase letter, and at least
-                        6 or more characters</font>
+                    <font color="red">Паролата трябва да е с дължина поне 6 символа и съдържа поне едно число и поне една главна и една малка буква</font>
                 </div>
             </div>
         </div>
         <div class="form-group">
-            <button [disabled]="loading" class="btn btn-primary">Register</button>
+            <button [disabled]="loading" class="btn btn-primary">Регистрирай се</button>
             <img *ngIf="loading" class="pl-3"
                 src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-            <a routerLink="/login" class="btn btn-link">Cancel</a>
+            <a routerLink="/login" class="btn btn-link">Отказ</a>
         </div>
     </form>    
 </div>

@@ -47,7 +47,7 @@ public class UserRestControllerTest {
     	log.info("running " + this.getClass().getName());
     	Mockito
     		.when(this.userRepo.findAll())
-    		.thenReturn(Flux.just(new User("1", "A", "S", "D", null, null, null, null, null, 0, null)));
+    		.thenReturn(Flux.just(new User("1", "A", "S", "D", null, null, null, null, null, null, 0, null)));
     	
     	WebTestClient
     		.bindToController(this.classUnderTest)
@@ -69,7 +69,7 @@ public class UserRestControllerTest {
     public void getById() {
     	Mockito
     		.when(this.userRepo.findById(Mockito.anyString()))
-    		.thenReturn(Mono.just(new User("1", "A", "S", "D", null, null, null, null, null, 0, null)));
+    		.thenReturn(Mono.just(new User("1", "A", "S", "D", null, null, null, null, null, null, 0, null)));
     	
     	WebTestClient
 			.bindToController(this.classUnderTest)
@@ -89,7 +89,7 @@ public class UserRestControllerTest {
     
 	@Test
     public void create() {
-    	User user = new User("1", "A", "S", "D", "F", "G", null, null, null, 0, null);
+    	User user = new User("1", "A", "S", "D", "F", "G", null, null, null, null, 0, null);
     	Mockito
     		.when(this.userRepo.save(Mockito.any(User.class)))
     		.thenReturn(Mono.just(user));
@@ -109,7 +109,7 @@ public class UserRestControllerTest {
     
 	@Test
 	public void deleteById() {
-    	User user = new User("1", "A", "S", "D", "F", "G", null, null, null, 0, null);
+    	User user = new User("1", "A", "S", "D", "F", "G", null, null, null, null, 0, null);
 		Mockito
 			.when(this.userRepo.findById("1"))
 			.thenReturn(Mono.just(user));
@@ -134,7 +134,7 @@ public class UserRestControllerTest {
 	
 	@Test
 	public void updateById() {
-		User user = new User("1", "A@abv.bg", "user", "FirstName", "LastName", "pass", null, null, null, 0, null);
+		User user = new User("1", "A@abv.bg", "user", "FirstName", "LastName", "pass", null, null, null, null, 0, null);
     	Mockito
     		.when(this.userRepo.save(Mockito.any(User.class)))
     		.thenReturn(Mono.just(user));
@@ -156,7 +156,7 @@ public class UserRestControllerTest {
 	
 	@Test
 	public void changeUserPassword() {
-		User user = new User("1", "A@abv.bg", "user", "FirstName", "LastName", new BCryptPasswordEncoder().encode("pass"), null, null, null, 0, null);
+		User user = new User("1", "A@abv.bg", "user", "FirstName", "LastName", new BCryptPasswordEncoder().encode("pass"), null, null, null, null, 0, null);
     	Mockito
     		.when(this.userRepo.save(Mockito.any(User.class)))
     		.thenReturn(Mono.just(user));

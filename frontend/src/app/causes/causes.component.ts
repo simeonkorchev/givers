@@ -9,6 +9,7 @@ import { CollectorService } from '../collector.service';
 import { EventType } from '../event-type.enum';
 import { RecommenderService } from '../recommender-service.service';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment'
 
 @Component({
   selector: 'app-causes',
@@ -42,20 +43,20 @@ export class CausesComponent implements OnInit {
 
   attendToCause(cause: Cause) {
     var username = localStorage.getItem('username');
-    this.collectorService.collect(username, cause.id, EventType.ATTEND, cause.name);
     this.causeService.attendToCause(cause, username)
       .subscribe(c => {
-        this.alertService.success("Congratulations for getting involved!");
+        this.collectorService.collect(username, cause.id, EventType.ATTEND, cause.name);
+        this.alertService.success("Поздравления за участието!");
       }, err => {
-        this.alertService.error("Something went wrong: " + err);
+        this.alertService.error("Случи се грешка: " + err);
       })
   }
 
-  getImage(photoPath: string): string {
-   if(photoPath == undefined || photoPath == null) {
-     return "./assets/placeholder.jpg";
+  getImage(cause: Cause): string {
+   if(cause.photoPath == undefined || cause.photoPath == null) {
+    return environment.imagesMount + cause.id;
    }
-   return photoPath;
+   return cause.photoPath;
   }
 
   goToCommentDetails(cause: Cause) {

@@ -42,7 +42,7 @@ public class CauseGenerator implements Generator<Cause>, Supplier<String> {
 		for (int i = 0; i < count; i++) {
 			String causeType = this.getRandomCauseType();
 			String location = this.getRandomLocation();
-			String ownerId = this.owners.get(this.random.nextInt(this.owners.size())).getId();
+			String ownerId = this.owners.get(this.random.nextInt(this.owners.size())).getUsername();
 			Long time = this.getRandomDate();
 			System.out.println("Random owner id: " + ownerId);
 			System.out.println("Random cause type: " + causeType);

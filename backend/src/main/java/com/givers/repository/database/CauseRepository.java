@@ -9,5 +9,5 @@ import reactor.core.publisher.Flux;
 
 @Repository
 public interface CauseRepository extends ReactiveMongoRepository<Cause, String>{
-	Flux<Cause> findByOwnerId(String ownerId);
+	Flux<Cause> findByOwner(String owner);
 }

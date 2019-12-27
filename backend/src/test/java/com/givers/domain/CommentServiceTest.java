@@ -60,7 +60,7 @@ public class CommentServiceTest {
 	
 	@Test
 	public void save() throws InterruptedException {
-		User user = this.userRepo.insert(new User(null, "email@email.com", "test", "x", "y", null, null, null, null, 0, null)).block();
+		User user = this.userRepo.insert(new User(null, "email@email.com", "test", "x", "y", null, null, null, null, null, 0, null)).block();
 		Cause cause = this.causeRepo.insert(new Cause(null, "name", null, null, null, null, null, null, null)).block();
 
 		Mono<Comment> comment = this.service.create("Test", user.getUsername(), cause.getId());

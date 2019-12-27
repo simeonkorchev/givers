@@ -1,69 +1,72 @@
 <div class="form-wrapper">
-  <h2>New Cause</h2>
+  <h2>Нова кауза</h2>
   <div>
     <form [formGroup]="causeForm" (ngSubmit)="OnSubmit()">
       <div class="form-group">
-        <label for="name">Name</label>
+        <label for="name">Име</label>
         <input type="text" formControlName="name" class="form-control"
           [ngClass]="{ 'is-invalid': submitted && f.name.errors }" />
           <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
               <div *ngIf="f.name.errors">
-                  <font color="red">Name is required</font>
+                  <font color="red">Името е задължително</font>
               </div>
           </div>
       </div>
       <div class="form-group">
-        <label for="location">Location</label>
+        <label for="location">Място</label>
         <input type="text" formControlName="location" class="form-control"
           [ngClass]="{ 'is-invalid': submitted && f.location.errors }" />
         <div *ngIf="submitted && f.location.errors" class="invalid-feedback">
           <div *ngIf="f.location.errors.required">
-            <font color="red">Location is required</font>
+            <font color="red">Локацията е задължителна</font>
           </div>
         </div>
       </div>
       <div class="form-group">
-        <label for="description">Description</label>
+        <label for="description">Описание</label>
         <textarea formControlName="description" class="form-control"
           [ngClass]="{ 'is-invalid': submitted && f.description.errors }">
-          Enter your description here..
+          Въведете някакво описание..
         </textarea>
         <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
           <div *ngIf="f.description.errors.required">
-            <font color="red">Description is required</font>
+            <font color="red">Описанието е задължително</font>
           </div>
         </div>
       </div>
       <div class="form-group">
-        <label for="type">Cause type</label>
+        <label for="type">Тип</label>
         <select formControlName="causeType" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.causeType.errors }">
           <option *ngFor="let causeType of causeTypes">{{causeType}}</option>
         </select>
         <div *ngIf="submitted && f.causeType.errors" class="invalid-feedback">
           <div *ngIf="f.causeType.errors.required">
-            <font color="red">Cause type is required</font>
+            <font color="red">Типа на каузата е задължителен</font>
           </div>
         </div>
       </div>
       <div class="form-group">
-        <!-- <label for="description">Date</label> -->
         <mat-form-field>
-            <input matInput [matDatepicker]="picker1" placeholder="Select cause date" formControlName="time" [ngClass]="{ 'is-invalid': submitted && f.time.errors }">
+            <input matInput [matDatepicker]="picker1" placeholder="Изберете дата за каузата" formControlName="date" [ngClass]="{ 'is-invalid': submitted && f.date.errors }">
             <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
             <mat-datepicker #picker1></mat-datepicker>
         </mat-form-field>
-        <div *ngIf="submitted && f.time.errors" class="invalid-feedback">
-            <div *ngIf="f.time.errors.required">
-              <font color="red">Date is required</font>
+        <div *ngIf="submitted && f.date.errors" class="invalid-feedback">
+            <div *ngIf="f.date.errors.required">
+              <font color="red">Датата е задължителна</font>
             </div>
         </div>
       </div>
       <div class="form-group">
-          <button class="btn btn-primary">Create</button>
+        <label for="causeImage">Качете снимка</label>  
+        <input formControlName="photoPath" class="form-control" type="file" (change)="selectFile($event)">
+      </div>
+      <div class="form-group">
+          <button class="btn btn-primary">Създай</button>
           <img *ngIf="loading" class="pl-3"
               src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
       </div>
-      <a routerLink="/login" class="btn btn-link">Cancel</a>
+      <a routerLink="/login" class="btn btn-link">Отказ</a>
     </form>
   </div>
 

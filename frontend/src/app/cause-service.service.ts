@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AuthenticationService } from './auth/auth';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { Observable} from 'rxjs';
 import { Cause } from './cause';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../environments/environment';
@@ -45,10 +44,14 @@ export class CauseService {
     return this.http.get<Cause>(this.causesUrl+"/"+id, {headers: this.headers});
   }
 
-  public save(cause: Cause) {
-    cause.time =  cause.date.getTime();
-    cause.ownerId = localStorage.getItem('username');
+  public save(cause: Cause) : Observable<Cause> {
     return this.http.post<Cause>(this.causesUrl, cause, {headers: this.headers});
+  }
+
+  public uploadImage(file: File, id: String): Observable<any> {
+    const formData: FormData = new FormData();
+    formData.append("file", file);
+    return this.http.post(this.causesUrl + "/upload/" + id, formData);
   }
   
   public update(cause: Cause) {

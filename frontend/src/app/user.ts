@@ -7,6 +7,7 @@ export class User {
     firstName: string;
     lastName: string;
     causes: Array<Cause>;
+    ownCauses: Array<Cause>;
     authorities: Array<string>;
     email: string;
     photoPath: string;

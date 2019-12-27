@@ -3,10 +3,11 @@ import { User } from './user';
 
 export class Cause {
     id: string;
-    ownerId: string;
+    owner: string;
     name: string;
     location: string;
     description: string;
+    photoPath: string;
     date: Date;
     time: number;
     commentIds: Array<string>;

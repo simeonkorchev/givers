@@ -1,8 +1,5 @@
 package com.givers.domain;
 
-import java.util.function.Predicate;
-
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +9,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 
-import com.givers.domain.UserServiceImpl;
 import com.givers.repository.database.UserRepository;
-import com.givers.repository.entity.Cause;
 import com.givers.repository.entity.User;
 
 import lombok.extern.log4j.Log4j2;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -61,7 +55,7 @@ public class UserServiceTest {
 	public void save() {
 		log.info("Executing save");
 
-		Mono<User> userMono = this.service.create("Test", "Test", "user", "user", "pass123", null, null, null, 0, null);
+		Mono<User> userMono = this.service.create("Test", "Test", "user", "user", "pass123", null, null, null, null, 0, null);
 		StepVerifier
 			.create(userMono)
 			.expectNextMatches(saved -> StringUtils.hasText(saved.getId()))
@@ -74,7 +68,7 @@ public class UserServiceTest {
 
 		String email = "test@test.com";
 		Mono<User> deleted = this.service
-				.create("Test", "Test", email, "user123", "pass1234", null, null, null, 0, null)
+				.create("Test", "Test", email, "user123", "pass1234", null, null, null, email, 0, null)
 				.flatMap(created -> this.service.delete(created.getId()));
 		
 		StepVerifier
@@ -88,8 +82,8 @@ public class UserServiceTest {
 		log.info("Executing update");
 
 		Mono<User> updated = this.service
-				.create("Test", "Test", "email@email.com", "user1234", "pass1234", null, null, null, 0, null)
-				.flatMap(u -> this.service.update(u.getId(),"Test", "Test", "updatedemail@email.com", "user", "pass1234", null, null, null, 0, null));
+				.create("Test", "Test", "email@email.com", "user1234", "pass1234", null, null, null, null, 0, null)
+				.flatMap(u -> this.service.update(u.getId(),"Test", "Test", "updatedemail@email.com", "user", "pass1234", null, null, null, null, 0, null));
 		
 		StepVerifier
 			.create(updated)
@@ -102,7 +96,7 @@ public class UserServiceTest {
 		log.info("Executing findById");
 
 		Mono<User> found = this.service
-				.create("Test", "Test", "email@email.com", "user12", "pass1234", null, null, null, 0, null)
+				.create("Test", "Test", "email@email.com", "user12", "pass1234", null, null, null, null, 0, null)
 				.flatMap(u -> this.service.get(u.getId()));
 		
 		StepVerifier
@@ -121,7 +115,7 @@ public class UserServiceTest {
 
 		PasswordEncoder encoder = new BCryptPasswordEncoder();
 		Mono<User> updated = this.service
-				.create("Test", "Test", "email@email.com", "user1234", "pass1234", null, null, null, 0, null)
+				.create("Test", "Test", "email@email.com", "user1234", "pass1234", null, null, null, null, 0, null)
 				.flatMap(u -> this.service.changeUserPassword(u.getUsername(), "pass1234", "updatedpass1234"));
 		
 		StepVerifier

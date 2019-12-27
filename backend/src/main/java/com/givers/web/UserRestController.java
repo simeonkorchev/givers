@@ -70,7 +70,7 @@ public class UserRestController {
     	log.info("Creating user: " + user);
     	return this.service.create(user.getFirstName(), user.getLastName(),
     			user.getEmail(), user.getUsername(),
-    			user.getPassword(), user.getCauses(), user.getCommentIds(), user.getPhotoPath(), user.getHonor(), user.getAuthorities())
+    			user.getPassword(), user.getCauses(),user.getOwnCauses() , user.getCommentIds(), user.getPhotoPath(), user.getHonor(), user.getAuthorities())
     			.map(u -> ResponseEntity.created(URI.create("users/"+ u.getId()))
     					.contentType(mediaType)
     					.build());
@@ -89,7 +89,7 @@ public class UserRestController {
     			.just(user)
     			.flatMap(u -> this.service.update(id, user.getEmail(), user.getUsername(),
     					user.getFirstName(), user.getLastName(),
-    	    			user.getPassword(), user.getCauses(), user.getCommentIds(), user.getPhotoPath(), user.getHonor(), user.getAuthorities()))
+    	    			user.getPassword(), user.getCauses(), user.getOwnCauses(), user.getCommentIds(), user.getPhotoPath(), user.getHonor(), user.getAuthorities()))
     			.map(r -> ResponseEntity
     					.ok()
     					.contentType(mediaType)

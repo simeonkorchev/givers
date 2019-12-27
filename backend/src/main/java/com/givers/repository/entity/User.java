@@ -35,6 +35,7 @@ public class User implements Serializable {
     @ValidPassword
     private String password;
     private List<String> causes;
+    private List<String> ownCauses;
     private List<String> commentIds;
     
 //    @Getter @Setter

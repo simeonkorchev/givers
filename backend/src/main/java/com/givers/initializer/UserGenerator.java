@@ -62,7 +62,7 @@ public class UserGenerator implements Generator<User> {
 	    						lastNameLatin.toLowerCase()+ 
 	    						mailSuffix;
 				String username = new String(firstNameLatin + lastNameLatin).toLowerCase();
-				users.add(new User(null, email, username, firstNameLatin, lastNameLatin, encodedPwd, null, null, null, 0, authorities));
+				users.add(new User(null, email, username, firstNameLatin, lastNameLatin, encodedPwd, null, null, null, null, 0, authorities));
     		}
     	}
     	return users;

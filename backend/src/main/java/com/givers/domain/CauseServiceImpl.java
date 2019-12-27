@@ -37,8 +37,8 @@ public final class CauseServiceImpl implements CauseService {
     	return this.repository.findById(id);
     }
     
-    public Flux<Cause> getByOwnerId(String ownerId) {
-    	return this.repository.findByOwnerId(ownerId);
+    public Flux<Cause> getByOwner(String ownerId) {
+    	return this.repository.findByOwner(ownerId);
     }
 	
     public Mono<Cause> update(String id, String name, String userId, String location, String description, String causeType, Long time, List<String> commentIds, List<String> participantIds) {
@@ -57,18 +57,18 @@ public final class CauseServiceImpl implements CauseService {
     			);
     }
     
-    public Mono<Cause> create(String name, String ownerId, String location, String description, String causeType, Long time, List<String> commentIds, List<String> participantIds) {
-    	log.info("Creating cause: "+new Cause(null, name, ownerId, location, description, causeType, time, commentIds, participantIds).toString());
+    public Mono<Cause> create(String name, String owner, String location, String description, String causeType, Long time, List<String> commentIds, List<String> participantIds) {
+    	log.info("Creating cause: "+new Cause(null, name, owner, location, description, causeType, time, commentIds, participantIds).toString());
     	return this.repository
-    			.save(new Cause(null, name, ownerId, location, description, causeType, time, commentIds, participantIds))
+    			.save(new Cause(null, name, owner, location, description, causeType, time, commentIds, participantIds))
     			.doOnSuccess(c ->  {
     				log.info("Updating the user causes");
     				this.publisher.publishEvent(new CauseCreatedEvent(c));
     				this.userRepository
-    					.findById(ownerId)
-    					.switchIfEmpty(raiseIllegalState("Could not find user with id: "+ ownerId))
+    					.findByUsername(owner)
+    					.switchIfEmpty(raiseIllegalState("Could not find user with id: "+ owner))
     					.subscribe(user -> {
-    						user.setCauses(appendIdToList(user.getCauses(), c.getId()));
+    						user.setCauses(appendIdToList(user.getOwnCauses(), c.getId()));
     						this.userRepository.save(user).subscribe();
     					});
     			});

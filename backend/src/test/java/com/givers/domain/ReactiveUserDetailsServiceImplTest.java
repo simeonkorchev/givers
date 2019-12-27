@@ -36,7 +36,7 @@ public class ReactiveUserDetailsServiceImplTest {
 		List<Authority> authorities = new ArrayList<>();
 		authorities.add(new Authority(Role.ROLE_USER.toString()));		
 		User user = this.userService
-				.create("Test", "Test", "email@email.com", "user12", "pass1234", null, null, null, 0, authorities)
+				.create("Test", "Test", "email@email.com", "user12", "pass1234", null, null, null, null, 0, authorities)
 				.block();
 		Mono<UserDetails> userDetails = this.service.findByUsername(user.getUsername());
 		
