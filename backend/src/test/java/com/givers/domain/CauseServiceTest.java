@@ -1,6 +1,7 @@
 package com.givers.domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -49,8 +50,8 @@ public class CauseServiceTest {
 	
 	@Test
     public void getAll() {
-		Flux<Cause> saved = repository.saveAll(Flux.just(new Cause(null, "test1", null, null, null, null, 1123L, null, null),
-													new Cause(null, "test2", null, null, null, null, 1123L, null, null)));
+		Flux<Cause> saved = repository.saveAll(Flux.just(new Cause(null, "test1", null, null, null, null, null, 1123L, null, null),
+													new Cause(null, "test2", null, null, null, null, null, 1123L, null, null)));
 		
 		Flux<Cause> composite = service.all().thenMany(saved);
 		
@@ -65,7 +66,7 @@ public class CauseServiceTest {
 	
 	@Test
 	public void save() {
-		Mono<Cause> causeMono = this.service.create("test", "testowner", "testLocation", "testDescription", null, 123L, null, null);
+		Mono<Cause> causeMono = this.service.create("test", "testowner", "testLocation", "testDescription", null, null, 123L, null, null);
 		StepVerifier
 			.create(causeMono)
 			.expectNextMatches(s -> StringUtils.hasText(s.getId()))
@@ -76,7 +77,7 @@ public class CauseServiceTest {
 	@Test
 	public void delete() {
 		Mono<Cause> deleted = this.service
-				.create("testName", "testowner","testLocation", "testDescription", null, 123L, null, null)
+				.create("testName", "testowner","testLocation", "testDescription", null, null, 123L, null, null)
 				.flatMap(saved -> this.service.delete(saved.getId()));
 		StepVerifier
 			.create(deleted)
@@ -87,8 +88,8 @@ public class CauseServiceTest {
 	@Test
 	public void update() {
 		Mono<Cause> updated = this.service
-				.create("test", "test", "testlocation", "testdescription",null, 123L, null, null)
-				.flatMap(u -> this.service.update(u.getId(), "updatedCaseName", "updatedTest", "updatedtestlocation", "updatedtestdescription", null, 123L, null, null));
+				.create("test", "test", "testlocation", "testdescription",null, null, 123L, null, null)
+				.flatMap(u -> this.service.update(u.getId(), "updatedCaseName", "updatedTest", "updatedtestlocation", "updatedtestdescription", null, null, 123L, null, null));
 		StepVerifier
 			.create(updated)
 			.expectNextMatches(u -> u.getOwner().equalsIgnoreCase("updatedTest"))
@@ -100,7 +101,7 @@ public class CauseServiceTest {
 		User user = this.userRepo.save(new User(null, "Test@abv.bg", "username", "FirstName", "LastName", "pass1234", null, null, null, null, 0, null)).block();
 		String random = UUID.randomUUID().toString();
 		Mono<Cause> deleted = this.service
-				.create(random, user.getId(), null, null, null, null, null, null)
+				.create(random, user.getId(), null, null, null, null, null, null, null)
 				.flatMap(saved -> this.service.get(saved.getId()));
 		
 		StepVerifier
@@ -113,7 +114,7 @@ public class CauseServiceTest {
 	public void attendToCause() throws InterruptedException {
 		User user = this.userRepo.save(new User(null, "Test@abv.bg", "username", "FirstName", "LastName", "pass1234", null, null, null, null, 0, null)).block();
 		Cause createdCause = this.service
-				.create("TestName", user.getId(), null, null, null, null, null, null)
+				.create("TestName", user.getId(), null, null, null, null, null, null, null)
 				.flatMap(c -> this.service.attendToCause(c, user.getUsername())).block();
 		
 		Mono<Cause> attendedCause = this.service.get(createdCause.getId());
@@ -128,13 +129,19 @@ public class CauseServiceTest {
 		User user = this.userRepo.save(new User(null, "Test@abv.bg", "username12345", "FirstName", "LastName", "pass1234", null, null, null, null, 0, null)).block();
 		List<String> ids = new ArrayList<>();
 		ids.add(user.getId());
-
-		CauseServiceTest.repository.saveAll(Flux.just(new Cause(null, "Testname1", "testowner1", null, null, null, null, null,ids),
-				new Cause(null, "Testname2", "testowner2", null, null, null, null, null,null))).blockLast();
 		
-		Thread.sleep(300);
+		CauseServiceTest.repository.saveAll(Flux.just(new Cause(null, "Testname1", user.getUsername(), null, null, null, null, null,ids, ids),
+				new Cause(null, "Testname2", "testowner2", null, null, null, null, null,null, ids))).blockLast();
+		CauseServiceTest.repository
+			.findByOwner(user.getUsername())
+			.map(c -> {
+				this.service.attendToCause(c, user.getUsername()).subscribe();
+				user.setCauses(Arrays.asList(c.getId()));
+				this.userRepo.save(user);
+				return c;
+			}).blockLast();
 		
-		Flux<Cause> userParticipation = this.service.getUserParticipation(user.getId());
+		Flux<Cause> userParticipation = this.service.getUserParticipation(user.getUsername());
 		
 		StepVerifier
 			.create(userParticipation)

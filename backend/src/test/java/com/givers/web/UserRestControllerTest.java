@@ -104,7 +104,11 @@ public class UserRestControllerTest {
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
-			.expectBody().isEmpty();
+			.expectBody()
+			.jsonPath("$.id").isEqualTo("1")
+			.jsonPath("$.email").isEqualTo("A")
+			.jsonPath("$.username").isEqualTo("S")
+			.jsonPath("$.firstName").isEqualTo("D");
     }
     
 	@Test

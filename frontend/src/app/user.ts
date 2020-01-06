@@ -12,4 +12,10 @@ export class User {
     email: string;
     photoPath: string;
     honor: BigInteger;
+
+    constructor(jsonObj: any) {
+        for (let prop in jsonObj) {
+            this[prop] = jsonObj[prop];
+        }
+    }
 }

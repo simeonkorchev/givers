@@ -10,6 +10,7 @@ import { EventType } from '../event-type.enum';
 import { RecommenderService } from '../recommender-service.service';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment'
+import { Log } from '../log';
 
 @Component({
   selector: 'app-causes',
@@ -20,6 +21,8 @@ export class CausesComponent implements OnInit {
   public defaultImg: string = 'src/assets/placeholder.png';
   public entries: Array<any>;
   private causes: Observable<Cause[]>;
+  private userLogs: Array<Log> = [];
+  private isMinLogCountReached: false;
 
   constructor(
     private router: Router, 
@@ -35,6 +38,7 @@ export class CausesComponent implements OnInit {
 
   ngOnInit() {
     this.causes = this.causeService.findAll();
+    this.updateLogsCount();
   }
 
   create() {
@@ -67,7 +71,21 @@ export class CausesComponent implements OnInit {
     this.authService.logout()
   }
 
+  updateLogsCount() {
+    this.userLogs = [];
+    this.collectorService
+      .findByUsername(localStorage.getItem('username'))
+      .subscribe(log => {
+        this.userLogs.push(log);
+      })
+  }
+
+  checkLogsCount(): boolean {
+    return this.userLogs.length < 5;
+  }
+  
   recommend() {
     this.causes = this.recommenderService.getRecommendations(localStorage.getItem('username'), 10);
   }
+  
 }

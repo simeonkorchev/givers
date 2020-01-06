@@ -49,8 +49,8 @@ public class CauseRestControllerTest {
 
     	Mockito
     		.when(this.causeRepo.findAll())
-    		.thenReturn(Flux.just(new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null),
-    				new Cause("2", "Testname2", "testowner2", null, null, null, null, null,null)));
+    		.thenReturn(Flux.just(new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null, null),
+    				new Cause("2", "Testname2", "testowner2", null, null, null, null, null,null, null)));
     	
     	WebTestClient
     		.bindToController(this.classUnderTest)
@@ -71,7 +71,7 @@ public class CauseRestControllerTest {
     public void getById() {
     	Mockito
     		.when(this.causeRepo.findById(Mockito.anyString()))
-    		.thenReturn(Mono.just(new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null)));
+    		.thenReturn(Mono.just(new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null, null)));
     	
     	WebTestClient
 		.bindToController(this.classUnderTest)
@@ -92,7 +92,7 @@ public class CauseRestControllerTest {
     public void getOwnCauses() {
     	Mockito
     		.when(this.causeRepo.findByOwner(Mockito.anyString()))
-    		.thenReturn(Flux.just(new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null)));
+    		.thenReturn(Flux.just(new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null, null)));
     	
     	WebTestClient
 		.bindToController(this.classUnderTest)
@@ -115,15 +115,18 @@ public class CauseRestControllerTest {
     	userIds.add("100");
     	
     	Mockito
-		.when(this.causeRepo.findAll())
-		.thenReturn(Flux.just(new Cause("1", "Testname1", "testowner1", null, null, null, null, null,userIds),
-				new Cause("2", "Testname2", "testowner2", null, null, null, null, null,null)));
+			.when(this.userRepo.findByUsername("testowner1"))
+			.thenReturn(Mono.just(new User("1", "A", "S", "D", null, null, new ArrayList<>(), null, null, null, 0, null)));
+    	Mockito
+			.when(this.causeRepo.findAllById(Mockito.anyCollection()))
+			.thenReturn(Flux.just(new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null, null),
+				new Cause("2", "Testname2", "testowner2", null, null, null, null, null,null, null)));
 	
     	WebTestClient
 			.bindToController(this.classUnderTest)
 			.build()
 			.get()
-			.uri("/causes/attend/100")
+			.uri("/causes/attend/testowner1")
 			.accept(MediaType.APPLICATION_JSON_UTF8)
 			.exchange()
 			.expectStatus().isOk()
@@ -138,7 +141,7 @@ public class CauseRestControllerTest {
 	public void deleteById() {
     	Mockito
 		.when(this.causeRepo.findById(Mockito.anyString()))
-		.thenReturn(Mono.just(new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null)));
+		.thenReturn(Mono.just(new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null, null)));
 
     	Mockito
 			.when(this.causeRepo.deleteById("1"))
@@ -160,7 +163,7 @@ public class CauseRestControllerTest {
 	
 	@Test
 	public void updateById() {
-		Cause cause = new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null);
+		Cause cause = new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null, null);
     	Mockito
     		.when(this.causeRepo.save(Mockito.any(Cause.class)))
     		.thenReturn(Mono.just(cause));
@@ -182,7 +185,7 @@ public class CauseRestControllerTest {
 	
 	@Test
     public void create() {
-		Cause cause = new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null);
+		Cause cause = new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null, null);
 		User user = new User("1", "A", "S", "D", "F", "G", null, null, null, null, 0, null);
 		
 		Mockito
@@ -206,12 +209,15 @@ public class CauseRestControllerTest {
 			.exchange()
 			.expectStatus().isCreated()
 			.expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
-			.expectBody().isEmpty();
+			.expectBody()
+			.jsonPath("$.id").isEqualTo("1")
+			.jsonPath("$.name").isEqualTo("Testname1")
+			.jsonPath("$.owner").isEqualTo("testowner1");
     }
 	
 	@Test
     public void attendToCause() {
-		Cause cause = new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null);
+		Cause cause = new Cause("1", "Testname1", "testowner1", null, null, null, null, null,null, null);
 		User user = new User("1", "A", "username", "D", "F", "G", null, null, null, null, 0, null);
 		
 		Mockito

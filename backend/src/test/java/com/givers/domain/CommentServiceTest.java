@@ -61,7 +61,7 @@ public class CommentServiceTest {
 	@Test
 	public void save() throws InterruptedException {
 		User user = this.userRepo.insert(new User(null, "email@email.com", "test", "x", "y", null, null, null, null, null, 0, null)).block();
-		Cause cause = this.causeRepo.insert(new Cause(null, "name", null, null, null, null, null, null, null)).block();
+		Cause cause = this.causeRepo.insert(new Cause(null, "name", null, null, null, null, null, null, null, null)).block();
 
 		Mono<Comment> comment = this.service.create("Test", user.getUsername(), cause.getId());
 		StepVerifier
@@ -90,7 +90,7 @@ public class CommentServiceTest {
 	
 	@Test
 	public void delete() {
-		Cause cause = this.causeRepo.insert(new Cause(null, "name", null, null, null, null, null, null, null)).block();
+		Cause cause = this.causeRepo.insert(new Cause(null, "name", null, null, null, null, null, null, null, null)).block();
 		Mono<Comment> deleted = this.service
 				.create("Test", "1", cause.getId())
 				.flatMap(d -> this.service.delete((d.getId())));
@@ -105,7 +105,7 @@ public class CommentServiceTest {
 	
 	@Test
 	public void update() {
-		Cause cause = this.causeRepo.insert(new Cause(null, "name", null, null, null, null, null, null, null)).block();
+		Cause cause = this.causeRepo.insert(new Cause(null, "name", null, null, null, null, null, null, null, null)).block();
 		Mono<Comment> updated = this.service
 				.create("Test", "1", cause.getId())
 				.flatMap(c -> this.service.update(c.getId(), "UpdateTest", "2", null));
@@ -119,7 +119,7 @@ public class CommentServiceTest {
 	
 	@Test
 	public void getById() {
-		Cause cause = this.causeRepo.insert(new Cause(null, "name", null, null, null, null, null, null, null)).block();
+		Cause cause = this.causeRepo.insert(new Cause(null, "name", null, null, null, null, null, null, null, null)).block();
 		
 		Mono<Comment> found = this.service
 				.create("Test", "1", cause.getId())

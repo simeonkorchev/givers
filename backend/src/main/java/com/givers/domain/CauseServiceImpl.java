@@ -37,14 +37,14 @@ public final class CauseServiceImpl implements CauseService {
     	return this.repository.findById(id);
     }
     
-    public Flux<Cause> getByOwner(String ownerId) {
-    	return this.repository.findByOwner(ownerId);
+    public Flux<Cause> getByOwner(String owner) {
+    	return this.repository.findByOwner(owner);
     }
 	
-    public Mono<Cause> update(String id, String name, String userId, String location, String description, String causeType, Long time, List<String> commentIds, List<String> participantIds) {
+    public Mono<Cause> update(String id, String name, String userId, String location, String description, String causeType, String imagePath, Long time, List<String> commentIds, List<String> participantIds) {
     	//TODO check whether causeType is a known and expected value value
     	return this.repository.findById(id)
-    			.map(c -> new Cause(id,name, userId, location, description, causeType, time, commentIds, participantIds))
+    			.map(c -> new Cause(id,name, userId, location, description, causeType, imagePath, time, commentIds, participantIds))
     			.flatMap(this.repository::save);
     }
     
@@ -57,10 +57,10 @@ public final class CauseServiceImpl implements CauseService {
     			);
     }
     
-    public Mono<Cause> create(String name, String owner, String location, String description, String causeType, Long time, List<String> commentIds, List<String> participantIds) {
-    	log.info("Creating cause: "+new Cause(null, name, owner, location, description, causeType, time, commentIds, participantIds).toString());
+    public Mono<Cause> create(String name, String owner, String location, String description, String causeType, String imagePath, Long time, List<String> commentIds, List<String> participantIds) {
+    	log.info("Creating cause: "+new Cause(null, name, owner, location, description, causeType, imagePath, time, commentIds, participantIds).toString());
     	return this.repository
-    			.save(new Cause(null, name, owner, location, description, causeType, time, commentIds, participantIds))
+    			.save(new Cause(null, name, owner, location, description, causeType, imagePath, time, commentIds, participantIds))
     			.doOnSuccess(c ->  {
     				log.info("Updating the user causes");
     				this.publisher.publishEvent(new CauseCreatedEvent(c));
@@ -74,16 +74,14 @@ public final class CauseServiceImpl implements CauseService {
     			});
     }
     
-	public Flux<Cause> getUserParticipation(String ownerId) {
-		return this.all()
-				.filter(c -> c.getParticipantIds() != null)
-				.filter(cause -> 
-					containUsername(cause.getParticipantIds(), ownerId)
-				);
-	}
-    
-	private boolean containUsername(List<String> participantIds, String ownerId) {
-		return participantIds.stream().anyMatch(id -> id.equals(ownerId));
+	public Flux<Cause> getUserParticipation(String owner) {
+		return this.userRepository
+				.findByUsername(owner)
+				.switchIfEmpty(raiseIllegalState("Could not find user with id: "+ owner))
+				.filter(u -> u.getCauses() != null)
+				.flatMapMany(u -> {
+					return this.repository.findAllById(u.getCauses());
+				});
 	}
 
 	public Mono<Cause> attendToCause(Cause cause, String username) {

@@ -51,15 +51,13 @@ export class CauseComponent implements OnInit {
   selectFile(event) {
     const file = event.target.files.item(0);
     var size = event.target.files[0].size;  
-      if(size > 5000000)  
-      {  
-          alert("size must not exceeds 5 MB");  
-          this.causeForm.get('causeImage').setValue("");  
-      }  
-      else  
-      {  
-        this.selectedFiles = event.target.files;  
-      }  
+    if(size > 5000000) {  
+      alert("size must not exceeds 5 MB");  
+      this.causeForm.get('causeImage').setValue("");  
+    }  
+    else {  
+      this.selectedFiles = event.target.files;  
+    }
   }
 
   OnSubmit() {
@@ -79,15 +77,15 @@ export class CauseComponent implements OnInit {
     }
     var c = new Cause({
       name: name,
-    location: location,
+      location: location,
       description: description,
       causeType: causeType,
       time: time,
       photoPath: photoPath
     });
+
     this.causeService.save(c).subscribe(
       cause => {
-        console.log(cause);
         if(this.selectedFiles != null) {
           this.causeService.uploadImage(this.selectedFiles.item(0), cause.id).subscribe(res => {
             let re = res.json();

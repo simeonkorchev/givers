@@ -1,18 +1,14 @@
 package com.givers.web;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.Calendar;
+import java.nio.file.Paths;
 
 import org.reactivestreams.Publisher;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,26 +18,28 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.givers.domain.PasswordResetTokenServiceImpl;
-import com.givers.domain.UserServiceImpl;
 import com.givers.domain.core.PasswordResetTokenService;
 import com.givers.domain.core.UserService;
 import com.givers.repository.entity.User;
 
 import lombok.extern.log4j.Log4j2;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Log4j2
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)  
+@RequestMapping(value = "/users")  
 public class UserRestController {
     private final MediaType mediaType = MediaType.APPLICATION_JSON_UTF8;
     private final UserService service;
     private final PasswordResetTokenService passwordResetTokenService;
     
+    @Value("${images.mount}")
+	private String imagesMount;
 //    @Autowired
 //    private JavaMailSender mailSender;
 //
@@ -73,8 +71,23 @@ public class UserRestController {
     			user.getPassword(), user.getCauses(),user.getOwnCauses() , user.getCommentIds(), user.getPhotoPath(), user.getHonor(), user.getAuthorities())
     			.map(u -> ResponseEntity.created(URI.create("users/"+ u.getId()))
     					.contentType(mediaType)
-    					.build());
+    					.body(u));
     }
+    
+    @PostMapping("/upload/{userId}")
+	Mono<ResponseEntity<String>> process(@PathVariable("userId") String userId, @RequestPart("file") Flux<FilePart> filePartFlux) {
+    	log.info("Uploading image for user with id: " + userId);
+    	log.info("Uploading avatar to: " + imagesMount);
+    	log.info("File is: "+ filePartFlux.toString());
+		return filePartFlux
+				.flatMap(it ->  it.transferTo(Paths.get(this.imagesMount +"/"+  userId)))
+		        .then(Mono.just(
+		        	ResponseEntity
+		        		.ok()
+		        		.contentType(mediaType)
+		        		.build()
+		        ));
+	}
     
     @DeleteMapping("/{id}")
 	@PreAuthorize("hasRole('USER')")
@@ -107,7 +120,7 @@ public class UserRestController {
     }
     
     @PutMapping("/updatePassword")
-//    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     public Mono<User> updatePassword(@RequestParam("oldPassword") String oldPassword,
     		@RequestParam("newPassword") String newPassword, @RequestBody User user) {
     	log.info("checking whether password ", oldPassword, "matches and set the new password ", newPassword);

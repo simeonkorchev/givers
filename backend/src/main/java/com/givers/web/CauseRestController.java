@@ -60,7 +60,7 @@ public class CauseRestController {
 	Mono<ResponseEntity<Cause>> create(@RequestBody Cause c) {
 		log.info("Creating cause: " + c.toString());
 		return this.causeService.create(c.getName(),c.getOwner(),
-				c.getLocation(),c.getDescription(), c.getCauseType(), c.getTime(), c.getCommentIds(), c.getParticipantIds())
+				c.getLocation(),c.getDescription(), c.getCauseType(), c.getImagePath(), c.getTime(), c.getCommentIds(), c.getParticipantIds())
 				.map(r -> ResponseEntity.created(URI.create("/causes/" + r.getId()))
 						.contentType(mediaType)
 						.body(r));	
@@ -70,7 +70,7 @@ public class CauseRestController {
 	@PreAuthorize("hasRole('USER')")
 	Mono<ResponseEntity<String>> process(@PathVariable("causeId") String causeId, @RequestPart("file") Flux<FilePart> filePartFlux) {
 		return filePartFlux
-				.flatMap(it ->  it.transferTo(Paths.get(this.imagesMount + causeId)))
+				.flatMap(it ->  it.transferTo(Paths.get(this.imagesMount + "/"+ causeId)))
 		        .then(Mono.just(
 		        	ResponseEntity
 		        		.ok()
@@ -91,7 +91,7 @@ public class CauseRestController {
 		return Mono
 				.just(cause)
 				.flatMap(c -> this.causeService.update(c.getId(), c.getName(),c.getOwner(),
-						c.getLocation(),c.getDescription(), c.getCauseType(), c.getTime(), c.getCommentIds(), c.getParticipantIds()))
+						c.getLocation(),c.getDescription(), c.getCauseType(), c.getImagePath(), c.getTime(), c.getCommentIds(), c.getParticipantIds()))
 				.map(c -> ResponseEntity
 						.ok()
 						.contentType(mediaType)
@@ -110,15 +110,15 @@ public class CauseRestController {
 							.build());
 	}
 	
-	@GetMapping("/own/{ownerId}")
+	@GetMapping("/own/{owner}")
 	@PreAuthorize("hasRole('USER')")
-	Publisher<Cause> findOwnCauses(@PathVariable("ownerId") String ownerId) {
-		return this.causeService.getByOwner(ownerId);
+	Publisher<Cause> findOwnCauses(@PathVariable("owner") String owner) {
+		return this.causeService.getByOwner(owner);
 	}
 	
-	@GetMapping("/attend/{ownerId}")
+	@GetMapping("/attend/{owner}")
 	@PreAuthorize("hasRole('USER')")
-	Publisher<Cause> getUserParticipation(@PathVariable("ownerId") String ownerId) {
-		return this.causeService.getUserParticipation(ownerId);
+	Publisher<Cause> getUserParticipation(@PathVariable("owner") String owner) {
+		return this.causeService.getUserParticipation(owner);
 	}
 }

@@ -23,4 +23,8 @@ export class CollectorService {
       .post<Log>(this.collectUrl, new Log(null, username, causeId, event, causeName), {headers: this.headers})
       .subscribe(log => console.log(log));
   }
+
+  public findByUsername(username: string): Observable<Log> {
+    return this.httpClient.get<Log>(this.collectUrl + "/" + username, {headers: this.headers});
+  }
 }

@@ -27,7 +27,7 @@ export class UserService {
     return this.http.get<User>(this.usersUrl+"/user/"+username, {headers: this.headers});
   }
 
-  public save(user: User) {
+  public save(user: User): Observable<User> {
     return this.http.post<User>(this.usersUrl, user, {headers: this.headers});
   }
 
@@ -35,13 +35,19 @@ export class UserService {
     return this.http.put<User>(this.usersUrl, user, {headers: this.headers});
   }
 
-  public delete(user: User) {
+  public delete(user: User): Observable<User> {
     return this.http.delete<User>(this.usersUrl + "/" + user.id, {headers: this.headers});
   } 
-  public register(user: User) {
+  public register(user: User): Observable<User> {
     return this.http.post<User>(this.usersUrl, user, {headers: this.headers});
   }
-  public changePassword(user: User, oldPassword: string, newPassword: string) {
+  public changePassword(user: User, oldPassword: string, newPassword: string): Observable<User> {
     return this.http.put<User>(this.usersUrl + "/updatePassword?oldPassword="+oldPassword+"&newPassword="+newPassword, user);
+  }
+
+  public uploadImage(file: File, id: String): Observable<any> {
+    const formData: FormData = new FormData();
+    formData.append("file", file);
+    return this.http.post(this.usersUrl + "/upload/" + id, formData);
   }
 }

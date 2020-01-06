@@ -15,7 +15,7 @@
           <li><button type="button" [routerLink]="['/user']">
               <fa-icon icon="users-cog"></fa-icon> Профил
             </button></li>
-          <li><button (click)="recommend()">
+          <li><button [disabled]="checkLogsCount()"  (click)="recommend()">
               <fa-icon icon="star"></fa-icon> Препоръчани каузи
             </button>
           </li>

@@ -19,6 +19,7 @@ public interface CauseService {
 			String location, 
 			String description, 
 			String causeType, 
+			String imagePath,
 			Long time, 
 			List<String> commentIds, 
 			List<String> participantIds);
@@ -28,6 +29,7 @@ public interface CauseService {
 			String location, 
 			String description,
 			String causeType, 
+			String imagePath,
 			Long time, 
 			List<String> commentIds, 
 			List<String> participantIds); 

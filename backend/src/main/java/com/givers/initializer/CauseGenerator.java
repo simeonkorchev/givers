@@ -16,17 +16,21 @@ import com.givers.repository.entity.CauseType;
 import com.givers.repository.entity.User;
 
 public class CauseGenerator implements Generator<Cause>, Supplier<String> {
-	private final Random random = new Random();
+	
 	private static final long MIN_DAY = new GregorianCalendar(2020, Calendar.MARCH, 1).getTime().getTime() / 1000; 
 	private static final long MAX_DAY = new GregorianCalendar(2020, Calendar.DECEMBER, 30).getTime().getTime() / 1000;
-	private final List<User> owners;
+	private static final String DEFAULT_CAUSE_IMAGE = "./assets/placeholder.jpg";
 
+	
 	private static final String ADULTS_TITLE = "Нека помогнем на възрастен човек в ";
 	private static final String HOMELESS_TITLE = "Помогнете на бездомен човек в ";
 	private static final String ANIMALS_TITLE = "Помогнете на животинка в ";
 	private static final String CHILDREN_TITLE = "Помогнете на дете в нужда в ";
 	private static final String NATURE_TITLE = "Да спасим и опазим природата в ";
-
+	
+	private final List<User> owners;
+	private final Random random = new Random();
+	
 	private List<String> locations;
 	private List<String> causeTypes;
 	
@@ -68,7 +72,7 @@ public class CauseGenerator implements Generator<Cause>, Supplier<String> {
 				break;
 
 			}
-			causes.add(new Cause(null, title, ownerId, location, title, causeType, time, null, null));
+			causes.add(new Cause(null, title, ownerId, location, title, causeType, DEFAULT_CAUSE_IMAGE, time, null, null));
 		}
 		return causes;
 	}
