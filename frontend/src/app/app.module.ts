@@ -24,6 +24,7 @@ import { CauseDetailsComponent } from './cause-details/cause-details.component';
 import { UserOwnCausesComponent } from './user-own-causes/user-own-causes.component';
 import { UserParticipationComponent } from './user-participation/user-participation.component';
 import { RecommendationsComponent } from './recommendations/recommendations.component';
+import { LogsComponent } from './logs/logs.component';
 
 let routes = [
   { path: "", redirectTo: "/login", pathMatch: "full" },
@@ -35,7 +36,8 @@ let routes = [
   { path: "user/security", component: ChangePasswordComponent, canActivate: [AuthGuard] },
   { path: "user/my/causes/:userId", component: UserOwnCausesComponent, canActivate: [AuthGuard] },
   { path: "user/attend/causes/:userId", component: UserParticipationComponent, canActivate: [AuthGuard] },
-  { path: "cause/details/:id", component: CauseDetailsComponent, canActivate: [AuthGuard] }
+  { path: "cause/details/:id", component: CauseDetailsComponent, canActivate: [AuthGuard] },
+  { path: "logs", component: LogsComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({
@@ -51,7 +53,8 @@ let routes = [
     CauseDetailsComponent,
     UserOwnCausesComponent,
     UserParticipationComponent,
-    RecommendationsComponent
+    RecommendationsComponent,
+    LogsComponent
   ],
   imports: [
     BrowserModule,

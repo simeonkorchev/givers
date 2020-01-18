@@ -36,7 +36,7 @@ public class RecommenderRestControllerTest {
 	public void getRecommendations() {
 		String username = "test";
 		int count = 1;
-		RecommendedCause rc = new RecommendedCause("1", "test", username, username, username, username, null, null, null, null);
+		RecommendedCause rc = new RecommendedCause("1", "test", username, username, username, username, null, null, null, null, null);
 		Mockito
 			.when(this.service.recommend(username, count))
 			.thenReturn(Flux.just(rc));

@@ -69,11 +69,11 @@ export class CauseComponent implements OnInit {
     var location = this.causeForm.get('location').value;
     var description = this.causeForm.get('description').value;
     var causeType = this.causeForm.get('causeType').value;
-    var time = this.causeForm.get('date').value.getTime();
-    var photoPath: string;
+    var time = this.causeForm.get('date').value.getTime() / 1000;
+    var imagePath: string;
 
     if(this.selectedFiles.length == 0) {
-      photoPath = "./assets/placeholder.jpg";
+      imagePath = "./assets/placeholder.jpg";
     }
     var c = new Cause({
       name: name,
@@ -81,20 +81,15 @@ export class CauseComponent implements OnInit {
       description: description,
       causeType: causeType,
       time: time,
-      photoPath: photoPath
+      imagePath: imagePath
     });
 
     this.causeService.save(c).subscribe(
       cause => {
         if(this.selectedFiles != null) {
           this.causeService.uploadImage(this.selectedFiles.item(0), cause.id).subscribe(res => {
-            let re = res.json();
-            if(re > 0) {
-              this.alertService.success("Успешно създадохте кауза!");
-              this.goToCausesList();
-            } else {
-              this.alertService.error("Не успяхме да създадем каузата, моля опитайте по-късно.");
-            }
+            this.alertService.success("Успешно създадохте кауза!");
+            this.goToCausesList();
           }, err => {
             this.alertService.error(err);
           })

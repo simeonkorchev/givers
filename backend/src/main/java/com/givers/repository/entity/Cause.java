@@ -23,7 +23,6 @@ public class Cause {
 	private String causeType;
 	private String imagePath;
 	private Long time;
-	//TODO make this collections Set
 	private List<String> commentIds;
 	private List<String> participantIds;
 }

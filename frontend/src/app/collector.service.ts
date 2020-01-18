@@ -24,7 +24,7 @@ export class CollectorService {
       .subscribe(log => console.log(log));
   }
 
-  public findByUsername(username: string): Observable<Log> {
-    return this.httpClient.get<Log>(this.collectUrl + "/" + username, {headers: this.headers});
+  public findByUsername(username: string): Observable<Log[]> {
+    return this.httpClient.get<Log[]>(this.collectUrl + "/" + username, {headers: this.headers});
   }
 }

@@ -14,6 +14,7 @@ configure_properties() {
     local jwt_secret
     local jwt_expiration
     local images_mount
+    local user_interactions_count
 
 	while IFS="=" read -r key value; do
       case "$key" in
@@ -33,6 +34,7 @@ configure_properties() {
         "CAUSES_COUNT") causes_count="$value" ;;
         "IMAGES_MOUNT") images_mount="$value" ;;
         "IMAGES_PATH") images_path="$value" ;;
+        "USER_INTERACTIONS_COUNT") user_interactions_count="$value" ;;
       esac
 	done < "$CONFIG_FILE"
 
@@ -46,9 +48,10 @@ configure_properties() {
     echo "init.data=${init_data}" >> "$SPRING_CONF_FILE"
     echo "causes.count=${causes_count}" >> "$SPRING_CONF_FILE"
     echo "logs.count=${logs_count}" >> "$SPRING_CONF_FILE"
-    echo "springbootwebfluxjjwt.jjwt.secret=${jwt_secret}" >> "$SPRING_CONF_FILE"
-    echo "springbootwebfluxjjwt.jjwt.expiration=${jwt_expiration}" >> "$SPRING_CONF_FILE"
+    echo "jwt.secret=${jwt_secret}" >> "$SPRING_CONF_FILE"
+    echo "jwt.expiration=${jwt_expiration}" >> "$SPRING_CONF_FILE"
     echo "images.mount=${images_mount}" >> "$SPRING_CONF_FILE"
+    echo "user.interactions.count=${user_interactions_count}" >> "$SPRING_CONF_FILE"
 	cat <<EOF > init-mongo.js
 db.createUser({
 	user: "$db_user",

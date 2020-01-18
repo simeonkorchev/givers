@@ -4,7 +4,7 @@
                     <img [src]="getImage(cause?.photoPath)" width="270" height="246"/>
                     <h3 class="prod-content-title">{{ cause?.name }}</h3>
                     <h4 class="prod-content-desc">{{ cause?.description }}</h4>
-                    <h4 class="prod-content-date"><fa-icon icon="calendar-alt"></fa-icon> {{ cause?.time * 1000 | date:'yyyy-MM-dd'}}</h4>
+                    <h4 class="prod-content-date"><fa-icon icon="calendar-alt"></fa-icon> {{ cause?.time * 1000 | date:'dd-MM-yyyy'}}</h4>
                     <h4 class="prod-content-location"><fa-icon icon="map-marked-alt"></fa-icon>  {{ cause?.location }}</h4>
                     <div>
                         <button type="button" class="btn colors-btn" (click)="attendToCause()"> <fa-icon icon="hand-holding-heart"></fa-icon> Участвай </button>

@@ -12,9 +12,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import jdk.internal.org.jline.utils.Log;
+import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+@Log4j2
 @Component
 public class AuthenticationManager implements ReactiveAuthenticationManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -33,6 +36,7 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
         if (authentication.isAuthenticated()) {
             return Mono.just(authentication);
         }
+        log.info("Authorization checking..");
         return Mono.just(authentication)
                 .switchIfEmpty(Mono.defer(this::raiseBadCredentials))
                 .cast(UsernamePasswordAuthenticationToken.class)

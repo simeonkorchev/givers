@@ -1,10 +1,16 @@
 package com.givers.web;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Paths;
 
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
@@ -69,13 +75,14 @@ public class CauseRestController {
 	@PostMapping("/upload/{causeId}")
 	@PreAuthorize("hasRole('USER')")
 	Mono<ResponseEntity<String>> process(@PathVariable("causeId") String causeId, @RequestPart("file") Flux<FilePart> filePartFlux) {
+		log.info("Uploading image for cause: ", causeId);
 		return filePartFlux
 				.flatMap(it ->  it.transferTo(Paths.get(this.imagesMount + "/"+ causeId)))
 		        .then(Mono.just(
 		        	ResponseEntity
 		        		.ok()
 		        		.contentType(mediaType)
-		        		.body("OK")
+		        		.build()
 		        ));
 	}
 	
@@ -96,6 +103,21 @@ public class CauseRestController {
 						.ok()
 						.contentType(mediaType)
 						.build());
+	}
+	
+	@GetMapping("/image/{causeId}")
+//	@PreAuthorize("hasRole('USER')")
+	Mono<ResponseEntity<InputStreamResource>> getImage(@PathVariable("causeId") String causeId) throws FileNotFoundException {
+		final File imgFile = new File(this.imagesMount + "/" + causeId);
+		final InputStream imgStream = new DataInputStream(new FileInputStream(imgFile));
+		
+		return Mono
+				.just(new InputStreamResource(imgStream))
+				.map(isr -> ResponseEntity
+						.ok()
+						.contentType(MediaType.IMAGE_PNG)
+						.body(isr)
+				);
 	}
 	
 	@PutMapping("/attend/{username}")

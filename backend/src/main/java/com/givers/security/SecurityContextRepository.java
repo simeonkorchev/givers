@@ -11,8 +11,10 @@ import org.springframework.security.web.server.context.ServerSecurityContextRepo
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
+import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 
+@Log4j2
 @Component
 public class SecurityContextRepository implements ServerSecurityContextRepository{
 	@Autowired
@@ -25,6 +27,8 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
 
 	@Override
 	public Mono<SecurityContext> load(ServerWebExchange exchange) {
+		log.info("Authentication start");
+    	
 		ServerHttpRequest request = exchange.getRequest();
 		String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 		

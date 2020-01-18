@@ -31,6 +31,7 @@ import lombok.extern.log4j.Log4j2;
 public class DataInitializer implements ApplicationListener<ApplicationReadyEvent> {
 	private static final int DEFAULT_CAUSES_COUNT = 5000;
 	private static final int DEFAULT_LOGS_COUNT = 15000;
+	private static final int DEFAULT_USER_INTERACTIONS_COUNT = 10;
 	
 	private final CommentService commentService;
 	private final UserRepository userRepository;
@@ -46,8 +47,13 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
 	private String causesCountConfig;
 	@Value("${logs.count}")
 	private String logsCountConfig;
+	@Value("${user.interactions.count}")
+	private String userInteractionsCountConfig;
+	
 	private int causesCount;
 	private int logsCount;
+	private int userInteractionsCount;
+
 	private Generator<Cause> causeGenerator;
 	private Generator<Log> logGenerator;
 	private Generator<User> userGenerator;
@@ -69,6 +75,7 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
 	public void onApplicationEvent(ApplicationReadyEvent event) {
 		this.causesCount = isNullOrEmpty(causesCountConfig) ? DEFAULT_CAUSES_COUNT : Integer.parseInt(causesCountConfig);
 		this.logsCount = isNullOrEmpty(logsCountConfig) ? DEFAULT_LOGS_COUNT : Integer.parseInt(logsCountConfig);
+		this.userInteractionsCount = isNullOrEmpty(userInteractionsCountConfig) ? DEFAULT_USER_INTERACTIONS_COUNT : Integer.parseInt(userInteractionsCountConfig);
 		if(!this.shouldInitData.equalsIgnoreCase("true")) {
 			return;
 		}
@@ -121,7 +128,8 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
 								savedUsers, 
 								Stream.of(EventType.values()).map(EventType::name).collect(Collectors.toList()),
 								causeService,
-								commentService
+								commentService,
+								userInteractionsCount
 						);
 						List<Log> logs = logGenerator.generate(logsCount);
 						collectorRepo

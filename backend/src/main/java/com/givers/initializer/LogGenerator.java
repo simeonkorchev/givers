@@ -23,9 +23,10 @@ public class LogGenerator implements Generator<Log>{
 	private List<String> logTypes;
 	private CauseService causeService;
 	private CommentService commentService;
+	private final int userInteractionsCount;
 
 	public LogGenerator(Supplier<String> causeTypeSupplier, List<Cause> allCauses, List<User> allUsers, List<String> logTypes,
-			CauseService causeService, CommentService commentService) {
+			CauseService causeService, CommentService commentService, int userInteractionsCount) {
 		super();
 
 		this.causeTypeSupplier = causeTypeSupplier;
@@ -34,6 +35,7 @@ public class LogGenerator implements Generator<Log>{
 		this.logTypes = logTypes;
 		this.causeService = causeService;
 		this.commentService = commentService;
+		this.userInteractionsCount = userInteractionsCount;
 		initCauseTypesToCauses();
 		initLocationsToCauses();
 	}
@@ -45,8 +47,8 @@ public class LogGenerator implements Generator<Log>{
 	// Think of combining the two parameters and create a logs based on them.
 	// Flow:
 	// A random user, which is not owner of the cause
-	// Makes 5 random interactios (attend, view or comment)
-	// With 5 causes from the same type and location (if possible)
+	// Makes userInteractionsCount random interactios (attend, view or comment)
+	// With causes from the same type and location (if possible)
 	// If the location have no other causes, then an other random location is chosen
 	// All this is being done for the half of the users.
 	// If the interaction is attend or comment, then the cause and user needs to be updated accordingly
@@ -58,7 +60,7 @@ public class LogGenerator implements Generator<Log>{
 			String causeType = this.causeTypeSupplier.supply();
 			Cause cause = getRandomCauseWithType(causeType);
 			boolean isStart = true;
-			for (int i = 0; i < 5; i++, j++) {
+			for (int i = 0; i < this.userInteractionsCount; i++, j++) {
 				if (!isStart) {
 					Cause candidate = getRandomCauseWithLocation(cause.getLocation());
 					if (candidate == null || candidate.getName().equals(cause.getName())) {
@@ -69,6 +71,7 @@ public class LogGenerator implements Generator<Log>{
 						cause = candidate;
 					}
 				}
+
 				isStart = false;
 				String logType = getRandomLogType();
 

@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,14 +35,14 @@ public class TokenProvider {
     private final Logger log = LoggerFactory.getLogger(TokenProvider.class);
 
     private static final String SALT_KEY = "JpxM4e858rc673syopdZnMFb*ExeqJtUc0HJ_iOxu~jiSYu+yPdPw93OBBjF";
-    private static final int TOKEN_VALIDITY = 86400; // Value in second
-
     private static final String AUTHORITIES_KEY = "auth";
-
+    
     private final Base64.Encoder encoder = Base64.getEncoder();
 
+    @Value("${jwt.secret}")
     private String secretKey;
-
+    @Value("${jwt.expiration}")
+    private String TOKEN_VALIDITY; // Value in second 
     private long tokenValidityInMilliseconds;
 
     @PostConstruct
@@ -49,7 +50,7 @@ public class TokenProvider {
         this.secretKey = encoder.encodeToString(SALT_KEY.getBytes(StandardCharsets.UTF_8));
 
         this.tokenValidityInMilliseconds =
-                1000 * TOKEN_VALIDITY;
+                1000 * Integer.parseInt(TOKEN_VALIDITY);
     }
 
     public String createToken(Authentication authentication) {

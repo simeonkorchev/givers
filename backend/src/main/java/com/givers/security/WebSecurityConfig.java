@@ -23,7 +23,10 @@ public class WebSecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
             "/login/**",
+            "/causes/image/**",
             "/users/**",
+            "/causes-nonblocking",
+            "/causes-blocking",
             "/ws/comments"
     };
 

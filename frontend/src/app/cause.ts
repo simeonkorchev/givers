@@ -7,7 +7,7 @@ export class Cause {
     name: string;
     location: string;
     description: string;
-    photoPath: string;
+    imagePath: string;
     date: Date;
     time: number;
     commentIds: Array<string>;

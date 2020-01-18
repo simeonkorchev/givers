@@ -1,0 +1,50 @@
+<body>
+    <header>
+      <div class="container">
+        <div id="branding">
+          <h1><span class="highlight">Givers</span></h1>
+        </div>
+        <nav>
+          <ul>
+            <li><button type="button" (click)="getLogs()">
+              <fa-icon icon="plus-circle"></fa-icon> Взаимодействия
+            </button></li>
+            <li><button type="button" [routerLink]="['/cause']">
+                <fa-icon icon="plus-circle"></fa-icon> Създай нова кауза
+              </button></li>
+            <li><button type="button" [routerLink]="['/user']">
+                <fa-icon icon="users-cog"></fa-icon> Профил
+              </button></li>
+            <!-- <li><button [disabled]="checkLogsCount()"  (click)="recommend()">
+                <fa-icon icon="star"></fa-icon> Препоръчани каузи
+              </button>
+            </li> -->
+            <li><button (click)="logout()" [routerLink]="['/login']">
+                <fa-icon icon="power-off"></fa-icon> Изход
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <!--/.Navbar-->
+    <div class="container">
+      <section id="main-section">
+        <div class="container">
+            <table id="logs">
+                <tr>
+                  <th *ngFor="let col of columns">
+                    {{col}}
+                  </th>
+                </tr>
+                <tr *ngFor="let log of logs">
+                  <td *ngFor="let col of index">
+                    {{log[col]}}
+                  </td>
+                </tr>
+              
+              </table>
+        </div>
+      </section>
+    </div>
+</body>

@@ -18,6 +18,7 @@ export class CauseService {
   }
 
   public findAll(): Observable<Array<Cause>> {
+    this.causes = [];
     return Observable.create((observer) => {
       let url = this.causesUrl;
       let causeEventSource = new EventSourcePolyfill(url,{ headers: { "Authorization": "Bearer " + localStorage.getItem("id_token")}});
@@ -74,4 +75,7 @@ export class CauseService {
     return this.http.get<Cause[]>(this.causesUrl + "/attend/" + id, {headers: this.headers});
   }
 
+  getImage(id: string): string {
+    return this.causesUrl + "/image/" + id;
+  }
 }

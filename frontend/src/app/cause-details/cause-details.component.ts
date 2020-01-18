@@ -90,11 +90,11 @@ export class CauseDetailsComponent implements OnInit  {
     });
   }
 
-  getImage(photoPath: string): string {
-    if(photoPath == undefined || photoPath == null) {
-      return "./assets/placeholder.jpg";
+  getImage(): string {
+    if(this.cause.imagePath == null || this.cause.imagePath == undefined) {
+      return this.causeService.getImage(this.cause.id);;
     }
-    return photoPath;
+    return this.cause.imagePath;
    }
 
    attendToCause() {

@@ -21,8 +21,7 @@ export class CausesComponent implements OnInit {
   public defaultImg: string = 'src/assets/placeholder.png';
   public entries: Array<any>;
   private causes: Observable<Cause[]>;
-  private userLogs: Array<Log> = [];
-  private isMinLogCountReached: false;
+  private userLogs = [];
 
   constructor(
     private router: Router, 
@@ -57,10 +56,10 @@ export class CausesComponent implements OnInit {
   }
 
   getImage(cause: Cause): string {
-   if(cause.photoPath == undefined || cause.photoPath == null) {
-    return environment.imagesMount + cause.id;
-   }
-   return cause.photoPath;
+    if(cause.imagePath == undefined || cause.imagePath == null) {
+      return this.causeService.getImage(cause.id);
+    }
+    return cause.imagePath;
   }
 
   goToCommentDetails(cause: Cause) {
@@ -75,8 +74,8 @@ export class CausesComponent implements OnInit {
     this.userLogs = [];
     this.collectorService
       .findByUsername(localStorage.getItem('username'))
-      .subscribe(log => {
-        this.userLogs.push(log);
+      .subscribe(logs => {
+        this.userLogs = logs;
       })
   }
 
@@ -87,5 +86,8 @@ export class CausesComponent implements OnInit {
   recommend() {
     this.causes = this.recommenderService.getRecommendations(localStorage.getItem('username'), 10);
   }
-  
+
+  goToLogs() {
+    this.router.navigate(["/logs"]);
+  }
 }

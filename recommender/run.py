@@ -57,7 +57,7 @@ def _train_model(df):
   #global sparse_person_content
   sparse_person_content = sparse.csr_matrix((grouped_df['eventStrength'].astype(float), (grouped_df['username'], grouped_df['causeId'])))
   global model
-  model = implicit.als.AlternatingLeastSquares(factors=20, regularization=0.1, iterations=200)
+  model = implicit.als.AlternatingLeastSquares(factors=20, regularization=0.1, iterations=100)
   alpha = 15
   data = (sparse_content_person * alpha).astype('double')
   model.fit(data)
@@ -108,7 +108,9 @@ def read_mongo(db, collection, query={}, host='localhost', port=27017, username=
 
 @app.route('/api/v1/recommend/<username>', methods=['GET'])
 def make_recommendation(username):
-  train_model()
+  if not username in user_to_cat_code:
+    train_model()
+
   if not username in user_to_cat_code:
       response = Response (
           mimetype="application/json",
@@ -187,7 +189,6 @@ def recommend(person_id, num_contents=3):
   scores = []
   names = []
   causeIds = []
-
   for idx in content_idx:
       # Append titles and scores to the list
       # names.append(grouped_df.causeName.loc[grouped_df.causeId == idx].iloc[0])
@@ -195,7 +196,6 @@ def recommend(person_id, num_contents=3):
       # usernames.append(cat_code_to_user[grouped_df.username.loc[grouped_df.causeId == idx].iloc[0]])
       causeIds.append(cat_to_cause_id[grouped_df.causeId.loc[grouped_df.causeId == idx].iloc[0]])
       scores.append(recommend_vector[idx])
-
   return causeIds
 
 @app.route('/api/v1/retrain', methods=['POST'])
