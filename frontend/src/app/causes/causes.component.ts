@@ -9,8 +9,6 @@ import { CollectorService } from '../collector.service';
 import { EventType } from '../event-type.enum';
 import { RecommenderService } from '../recommender-service.service';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment'
-import { Log } from '../log';
 
 @Component({
   selector: 'app-causes',
@@ -25,7 +23,6 @@ export class CausesComponent implements OnInit {
 
   constructor(
     private router: Router, 
-    private route: ActivatedRoute,
     private alertService: AlertService,
     private causeService: CauseService,
     private authService: AuthenticationService,
@@ -56,10 +53,7 @@ export class CausesComponent implements OnInit {
   }
 
   getImage(cause: Cause): string {
-    if(cause.imagePath == undefined || cause.imagePath == null) {
-      return this.causeService.getImage(cause.id);
-    }
-    return cause.imagePath;
+    return this.causeService.getImage(cause.id);;
   }
 
   goToCommentDetails(cause: Cause) {
@@ -89,5 +83,16 @@ export class CausesComponent implements OnInit {
 
   goToLogs() {
     this.router.navigate(["/logs"]);
+  }
+
+  fitContent(name: string): string {
+    var cut = "";
+    if(name.length > 35) {
+      cut = name.substring(0, 33);
+      cut += "..";
+    } else {
+      cut = name;
+    }
+    return cut;
   }
 }

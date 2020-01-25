@@ -1,10 +1,17 @@
 package com.givers.web;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.nio.file.Paths;
 
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
@@ -34,7 +41,8 @@ import reactor.core.publisher.Mono;
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping(value = "/users")  
 public class UserRestController {
-    private final MediaType mediaType = MediaType.APPLICATION_JSON_UTF8;
+    private static final String DEFAULT_AVATAR = "default-avatar.jpg";
+	private final MediaType mediaType = MediaType.APPLICATION_JSON_UTF8;
     private final UserService service;
     private final PasswordResetTokenService passwordResetTokenService;
     
@@ -74,13 +82,13 @@ public class UserRestController {
     					.body(u));
     }
     
-    @PostMapping("/upload/{userId}")
-	Mono<ResponseEntity<String>> process(@PathVariable("userId") String userId, @RequestPart("file") Flux<FilePart> filePartFlux) {
-    	log.info("Uploading image for user with id: " + userId);
+    @PostMapping("/upload/{username}")
+	Mono<ResponseEntity<String>> process(@PathVariable("username") String username, @RequestPart("file") Flux<FilePart> filePartFlux) {
+    	log.info("Uploading image for user with id: " + username);
     	log.info("Uploading avatar to: " + imagesMount);
     	log.info("File is: "+ filePartFlux.toString());
 		return filePartFlux
-				.flatMap(it ->  it.transferTo(Paths.get(this.imagesMount +"/"+  userId)))
+				.flatMap(it ->  it.transferTo(Paths.get(this.imagesMount +"/"+  username)))
 		        .then(Mono.just(
 		        	ResponseEntity
 		        		.ok()
@@ -126,6 +134,28 @@ public class UserRestController {
     	log.info("checking whether password ", oldPassword, "matches and set the new password ", newPassword);
     	return this.service.changeUserPassword(user.getUsername(), oldPassword, newPassword);
     }
+    
+	@GetMapping("/image/{username}")
+//	@PreAuthorize("hasRole('USER')")
+	Mono<ResponseEntity<InputStreamResource>> getImage(@PathVariable("username") String username) throws FileNotFoundException {
+		final File imgFile = new File(this.imagesMount + "/" + username);
+		InputStream imgStream;
+		try {
+			imgStream = new DataInputStream(new FileInputStream(imgFile));
+		} catch (FileNotFoundException e) {
+			ClassLoader classLoader = getClass().getClassLoader();
+		       URL resource = classLoader.getResource(DEFAULT_AVATAR);
+			imgStream = new DataInputStream(new FileInputStream(resource.getFile()));
+		}
+		
+		return Mono
+				.just(new InputStreamResource(imgStream))
+				.map(isr -> ResponseEntity
+						.ok()
+						.contentType(MediaType.IMAGE_PNG)
+						.body(isr)
+				);
+	}
     
 //    @PostMapping("/resetPassword")
 //    public Mono<ResponseEntity<GenericResponse>> resetPassword(@RequestParam("email") String email) {

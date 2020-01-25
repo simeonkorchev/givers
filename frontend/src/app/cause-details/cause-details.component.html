@@ -18,12 +18,15 @@
             <ul>
                 <li *ngFor="let comment of alreadyMadeComments">
                   <header>
-                    <h1> {{ comment.content }}</h1>
-                    <h1>{{ comment.owner }}</h1>
+                    <div class="comment">
+                      <img [src]="getProfileAvatar(comment?.owner)" width="50" height="50" class="comment-avatar" />
+                      <h1 class="owner">{{ comment.owner }}</h1>
+                      <div></div><h1 class="content"> {{ comment.content }}</h1>
+                    </div>
                   </header>
                 </li>
                 <div class="add-comment">
-                  <input class="comment-input form-control" type="text" [(ngModel)]="comment" placeholder="Add Comment..."/>
+                  <input class="comment-input form-control" type="text" [(ngModel)]="comment" placeholder="Добавете коментар..."/>
                   <button class="btn" (click)="addComment()">Коментирай</button>
                 </div>
               </ul>

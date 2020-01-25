@@ -7,7 +7,7 @@
   
   /* Global */
   .container {
-    width: 80%;
+    width: 90%;
     margin: auto;
     overflow: hidden;
   }
@@ -60,7 +60,7 @@ span ul, ol {
     border-image-width: initial;
     border-image-outset: initial;
     border-image-repeat: initial;
-    background: #fff;
+    background: rgb(190, 189, 189);
     background-image: initial;
     background-position-x: initial;
     background-position-y: initial;
@@ -76,6 +76,7 @@ span ul, ol {
     text-transform: uppercase;
     text-align: center;
     transition: all .2s linear;
+    border-radius: 10px 10px;
 }
 
 .prod-teaser {
@@ -95,6 +96,7 @@ span ul, ol {
     border: 2px solid #d8d8d8;
     border-top: none;
     color: #383838;
+    border-radius: 30px 30px;
 }
 
 span li {
@@ -175,11 +177,15 @@ header #branding {
 header #branding h1 {
     margin: 0;
 }
-  header {
+header {
     background: #84e9ec;
     color: #ffffff;
     padding-top: 30px;
     min-height: 70px;
     border-bottom: #776cd8 3px solid;
 }
-  
+
+.btn:hover, .btn:active {
+    color: #fff;
+    background-color: #1e0cbd;
+}

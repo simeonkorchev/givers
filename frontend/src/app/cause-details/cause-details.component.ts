@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Cause } from '../cause';
 import { CauseService } from '../cause-service.service';
 import { UserService } from '../user-service.service';
@@ -69,16 +69,6 @@ export class CauseDetailsComponent implements OnInit  {
             );
           });
       });
-    // this.sub = this.route.params.subscribe(params => {
-    //   this.id = params['id'];
-    //   this.causeService.findById(this.id).subscribe(causes => {
-    //     this.cause = causes[0];
-    //     this.commentService.findByIds(this.cause.commentIds).subscribe(comments => {
-    //       this.alreadyMadeComments = comments;
-    //     });
-    //     console.log(this.alreadyMadeComments);
-    // });
-  // });
 }
 
   loadComments() {
@@ -122,5 +112,9 @@ export class CauseDetailsComponent implements OnInit  {
          this.alertService.error(err);
        }
      )
+   }
+
+   getProfileAvatar(owner: string): string {
+    return this.userService.getImage(owner);
    }
 }

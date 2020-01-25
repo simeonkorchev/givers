@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.nio.file.Paths;
 
 import org.reactivestreams.Publisher;
@@ -38,6 +39,7 @@ import reactor.core.publisher.Mono;
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping(value = "/causes")
 public class CauseRestController {
+	private static final String DEFAULT_AVATAR = "placeholder.jpg";
 	private final MediaType mediaType = MediaType.APPLICATION_JSON_UTF8;
 	private final CauseService causeService;
 
@@ -109,7 +111,14 @@ public class CauseRestController {
 //	@PreAuthorize("hasRole('USER')")
 	Mono<ResponseEntity<InputStreamResource>> getImage(@PathVariable("causeId") String causeId) throws FileNotFoundException {
 		final File imgFile = new File(this.imagesMount + "/" + causeId);
-		final InputStream imgStream = new DataInputStream(new FileInputStream(imgFile));
+		InputStream imgStream;
+		try {
+			imgStream = new DataInputStream(new FileInputStream(imgFile));
+		} catch (FileNotFoundException e) {
+			ClassLoader classLoader = getClass().getClassLoader();
+		       URL resource = classLoader.getResource(DEFAULT_AVATAR);
+			imgStream = new DataInputStream(new FileInputStream(resource.getFile()));
+		}
 		
 		return Mono
 				.just(new InputStreamResource(imgStream))

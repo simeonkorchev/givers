@@ -50,4 +50,8 @@ export class UserService {
     formData.append("file", file);
     return this.http.post(this.usersUrl + "/upload/" + id, formData);
   }
+
+  public getImage(owner: string): string {
+    return this.usersUrl + "/image/" + owner;
+  }
 }

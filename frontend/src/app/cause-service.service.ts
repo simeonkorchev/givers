@@ -23,7 +23,6 @@ export class CauseService {
       let url = this.causesUrl;
       let causeEventSource = new EventSourcePolyfill(url,{ headers: { "Authorization": "Bearer " + localStorage.getItem("id_token")}});
       causeEventSource.onmessage = (event) => {
-        console.debug("Received event: ", event);
         let json = JSON.parse(event.data);
         this.causes.push(new Cause(json));
         observer.next(this.causes);

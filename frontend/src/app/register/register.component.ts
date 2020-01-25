@@ -90,9 +90,8 @@ export class RegisterComponent implements OnInit {
 
     this.userService.register(user).subscribe(
       user => {
-        console.log(user);
         if(this.selectedFiles != null) {
-          this.userService.uploadImage(this.selectedFiles.item(0), user.id)
+          this.userService.uploadImage(this.selectedFiles.item(0), user.username)
             .subscribe(() => {
               this.alertService.success('Регистрацията е успешна!', true);
               this.router.navigate(["/login"]);

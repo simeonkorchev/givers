@@ -185,16 +185,14 @@ header #branding h1 {
 }
 table {
     border-collapse: collapse;
-    border-radius: 25px;
 }
 
 th {
     padding: 10px;
     font-family: Lato-Bold;
-    font-size: 18px;
+    font-size: 20px;
     color: #fff;
     line-height: 1.4;
-    padding-left: 40px;
     background-color: #6c7ae0;
 }
 
@@ -202,8 +200,10 @@ td {
     padding-top: 16px;
     padding-bottom: 16px;
     font-family: Lato-Regular;
-    font-size: 15px;
-    color: #808080;
+    font-size: 17px;
+    color: #3a3939;
     line-height: 1.4;
-    padding-left: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: rgb(247, 247, 247);
 }

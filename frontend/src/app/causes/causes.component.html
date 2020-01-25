@@ -38,9 +38,9 @@
           <li class="prod-teaser">
             <div class="prod-teaser-content">
               <img [src]="getImage(entry)" width="270" height="246"/>
-              <h6 class="prod-teaser-content-title">{{ entry.name }}</h6>
+              <h6 class="prod-teaser-content-title">{{ fitContent(entry.name) }}</h6>
               <h6 class="prod-teaser-content-title"><fa-icon icon="calendar-alt"></fa-icon> {{ entry.time * 1000 | date:'dd-MM-yyyy'}}</h6>
-              <h6 class="prod-teaser-content-title"> <fa-icon icon="map-marked-alt"></fa-icon>  {{ entry.location }}</h6>
+              <h6 class="prod-teaser-content-title"> <fa-icon icon="map-marked-alt"></fa-icon>  {{ fitContent(entry.location) }}</h6>
               <h6 class="prod-teaser-content-title">Участници: {{ entry.participantIds?.length }}</h6>
               <h6 class="prod-teaser-content-title">Коментари: {{ entry.commentIds?.length }}</h6>
               <div>
