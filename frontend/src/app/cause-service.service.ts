@@ -66,12 +66,12 @@ export class CauseService {
     this.http.delete<Cause>(this.causesUrl +"/"+ cause.id, {headers: this.headers});
   }
 
-  public findOwnCauses(ownerId: string): Observable<Cause[]> {
-    return this.http.get<Cause[]>(this.causesUrl+"/own/"+ ownerId, {headers: this.headers});
+  public findOwnCauses(username: string): Observable<Cause[]> {
+    return this.http.get<Cause[]>(this.causesUrl+"/own/"+ username, {headers: this.headers});
   }
 
-  public getUserParticipation(id: string): Observable<Cause[]> {
-    return this.http.get<Cause[]>(this.causesUrl + "/attend/" + id, {headers: this.headers});
+  public getUserParticipation(username: string): Observable<Cause[]> {
+    return this.http.get<Cause[]>(this.causesUrl + "/attend/" + username, {headers: this.headers});
   }
 
   getImage(id: string): string {

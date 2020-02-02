@@ -25,6 +25,7 @@ import { UserOwnCausesComponent } from './user-own-causes/user-own-causes.compon
 import { UserParticipationComponent } from './user-participation/user-participation.component';
 import { RecommendationsComponent } from './recommendations/recommendations.component';
 import { LogsComponent } from './logs/logs.component';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 let routes = [
   { path: "", redirectTo: "/login", pathMatch: "full" },
@@ -34,8 +35,8 @@ let routes = [
   { path: "causes", component: CausesComponent, canActivate: [AuthGuard] },
   { path: "cause", component: CauseComponent, canActivate: [AuthGuard] },
   { path: "user/security", component: ChangePasswordComponent, canActivate: [AuthGuard] },
-  { path: "user/my/causes/:userId", component: UserOwnCausesComponent, canActivate: [AuthGuard] },
-  { path: "user/attend/causes/:userId", component: UserParticipationComponent, canActivate: [AuthGuard] },
+  { path: "user/my/causes", component: UserOwnCausesComponent, canActivate: [AuthGuard] },
+  { path: "user/attend/causes", component: UserParticipationComponent, canActivate: [AuthGuard] },
   { path: "cause/details/:id", component: CauseDetailsComponent, canActivate: [AuthGuard] },
   { path: "logs", component: LogsComponent, canActivate: [AuthGuard] }
 ];
@@ -67,6 +68,7 @@ let routes = [
     FontAwesomeModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatAutocompleteModule,
     MatInputModule
   ],
   providers: [

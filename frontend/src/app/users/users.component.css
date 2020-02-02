@@ -30,7 +30,7 @@ body {
     list-style: none;
     background-color: #fff;
     border: 1px solid #d1d5da;
-    border-radius: 3px;
+    border-radius: 5px;
 }
 .menu-heading {
     display: block;
@@ -41,7 +41,7 @@ body {
     font-weight: 600;
     line-height: 20px;
     color: #586069;
-    background-color: #f3f5f8;
+    background-color: #b4cef5;
     border-bottom: 1px solid #e1e4e8;
 }
 .menu-heading:first-child {
@@ -92,4 +92,7 @@ body {
     margin-bottom: 16px;
     border-bottom: 1px solid #e1e4e8;
     flex-flow: row wrap;
+}
+.avatar {
+    border-radius: 360%;
 }

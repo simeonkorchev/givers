@@ -55,7 +55,7 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
     private Mono<UserDetails> authenticateToken(final UsernamePasswordAuthenticationToken authenticationToken) {
         String username = authenticationToken.getName();
 
-        logger.info("checking authentication for user " + username);
+        logger.info("checking authentication for user " + username + " and credentails: " + authenticationToken.getCredentials());
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             logger.info("authenticated user " + username + ", setting security context");

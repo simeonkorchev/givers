@@ -53,7 +53,7 @@ export class CausesComponent implements OnInit {
   }
 
   getImage(cause: Cause): string {
-    return this.causeService.getImage(cause.id);;
+    return this.causeService.getImage(cause.id);
   }
 
   goToCommentDetails(cause: Cause) {

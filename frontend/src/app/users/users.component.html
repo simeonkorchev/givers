@@ -1,59 +1,59 @@
 <div class="page-content container">
     <div class="col-3 float-left pr-4">
-        <nav class="menu" aria-label="Personal settings" data-pjax="">
+        <nav class="menu" aria-label="Personal settings">
             <h3 class="menu-heading">
-                Personal settings
+                Настройки
             </h3>
-            <a [routerLink]="['/user']" class="selected menu-item">Profile</a>
-            <a [routerLink]="['/user/security']" class="menu-item">Security</a>
-            <a  *ngIf="user" [routerLink]="['/user/my/causes', user?.id]" class="menu-item">My Causes</a>
-            <a *ngIf="user" [routerLink]="['/user/attend/causes', user?.id]" class="menu-item">Causes I Attend</a>
+            <a [routerLink]="['/user']" class="selected menu-item">Профил</a>
+            <a [routerLink]="['/user/security']" class="menu-item">Сигурност</a>
+            <a *ngIf="user" [routerLink]="['/user/my/causes']" class="menu-item">Създадени каузи</a>
+            <a *ngIf="user" [routerLink]="['/user/attend/causes']" class="menu-item">Каузите в които участвам</a>
         </nav>
     </div>
     <div class="col-9 float-left">
         <div class="Subhead">
-            <h2 class="Subhead-heading">Your Profile</h2>
+            <h2 class="Subhead-heading">Профил</h2>
         </div>
-        <form *ngIf="userObservable | async; else loading" [formGroup]="userProfileForm" (ngSubmit)="onSubmit()">
+        <form *ngIf="userObservable | async; else loading" [formGroup]="userProfileForm" (ngSubmit)="OnSubmit()">
             <div class="form-group">
-                <label for="email">Email</label>
+                <label for="email">Е-мейл</label>
                 <input type="email" class="form-control" id="email"
                     [ngClass]="{ 'is-invalid': submitted && f.email.errors }" formControlName="email" name="email">
                 <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
                     <div *ngIf="f.email.errors.required">
-                        <font color="red">Email is required</font>
+                        <font color="red">Е-мейла е задължителен</font>
                     </div>
                 </div>
                 <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
                     <div *ngIf="f.email.errors.pattern">
-                        <font color="red">Please provide a valid email</font>
+                        <font color="red">Моля, въведете правилен е-майл</font>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label for="firstName">First Name</label>
+                <label for="firstName">Име</label>
                 <input type="text" formControlName="firstName" class="form-control"
                     [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
                 <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
                     <div *ngIf="f.firstName.errors.required">
-                        <font color="red">First Name is required</font>
+                        <font color="red">Името е задължително</font>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label for="lastName">Last Name</label>
+                <label for="lastName">Фамилия</label>
                 <input type="text" formControlName="lastName" class="form-control"
                     [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
                 <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
                     <div *ngIf="f.lastName.errors.required">
-                        <font color="red">Last Name is required</font>
+                        <font color="red">Фамилията е задължителна</font>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label for="username">Username</label>
+                <label for="username">Потребителско име</label>
                 <input type="text" formControlName="username" class="form-control"
-                    [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+                    [ngClass]="{ 'is-invalid': submitted && f.username.errors }" readonly/>
                 <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
                     <div *ngIf="f.username.errors.required">
                         <font color="red">Username is required</font>
@@ -61,14 +61,22 @@
                 </div>
             </div>
             <div class="form-group">
-                <button class="btn btn-primary">Update Profile</button>
+                <label for="avatar">Профилна снимка </label>
+                <img class="avatar" [src]="getUserImage()" width="200" height="200"/>
+            </div>
+            <div class="form-group">
+                <label for="causeImage">Нова снимка</label>  
+                <input formControlName="photoPath" class="form-control" type="file" (change)="selectFile($event)">
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary">Обнови</button>
                 <img *ngIf="!ready" class="pl-3"
                     src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-                <a routerLink="/login" class="btn btn-link">Cancel</a>
+                <a routerLink="/causes" class="btn btn-link">Отмени</a>
             </div>
         </form>
     </div>
     <ng-template #loading>
-        Loading User...
+        Зареждаме...
     </ng-template>
 </div>

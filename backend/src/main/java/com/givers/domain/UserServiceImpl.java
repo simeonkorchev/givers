@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
 	public Mono<User> update(String id, String firstName, String lastName, String email, String username, String password, List<String> involvedCauses, List<String> ownCauses, List<String> commentIds, String photoPath, int honor, List<Authority> authorities) {
 		return this.userRepository
 				.findById(id)
-				.map(u -> new User(id, email.toLowerCase(), username.toLowerCase(), firstName, lastName, password, involvedCauses, ownCauses, commentIds, photoPath, honor, authorities))
+				.map(u -> new User(id, email.trim().toLowerCase(), username.trim().toLowerCase(), firstName, lastName, password, involvedCauses, ownCauses, commentIds, photoPath, honor, authorities))
 				.flatMap(this.userRepository::save);
 	}
 	

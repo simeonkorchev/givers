@@ -106,25 +106,23 @@ public class UserRestController {
     @PutMapping("/{id}")
 	@PreAuthorize("hasRole('USER')")
     public Mono<ResponseEntity<User>> updateById(@PathVariable("id") String id, @RequestBody User user) {
+    	log.info("Updating user "+ user);
     	return Mono
     			.just(user)
-    			.flatMap(u -> this.service.update(id, user.getEmail(), user.getUsername(),
-    					user.getFirstName(), user.getLastName(),
+    			.flatMap(u -> this.service.update(id, user.getFirstName(), user.getLastName(),
+    					user.getEmail(), user.getUsername(),
     	    			user.getPassword(), user.getCauses(), user.getOwnCauses(), user.getCommentIds(), user.getPhotoPath(), user.getHonor(), user.getAuthorities()))
     			.map(r -> ResponseEntity
     					.ok()
     					.contentType(mediaType)
-    					.build());
+    					.body(r));
     		
     }
     
     @GetMapping("/user/{username}")
     @PreAuthorize("hasRole('USER')")
     public Publisher<User> findByUsername(@PathVariable("username") String username) {
-    	return this.service.getByUsername(username).map(user ->  {
-    		user.setPassword(null);
-    		return user;	
-    	});
+    	return this.service.getByUsername(username);
     }
     
     @PutMapping("/updatePassword")
@@ -138,11 +136,14 @@ public class UserRestController {
 	@GetMapping("/image/{username}")
 //	@PreAuthorize("hasRole('USER')")
 	Mono<ResponseEntity<InputStreamResource>> getImage(@PathVariable("username") String username) throws FileNotFoundException {
+		log.info("Gettiing avatar for: " + username);
 		final File imgFile = new File(this.imagesMount + "/" + username);
 		InputStream imgStream;
 		try {
 			imgStream = new DataInputStream(new FileInputStream(imgFile));
+			log.info("Avatar found");
 		} catch (FileNotFoundException e) {
+			log.info("Avatar was not found. Fallback to default image");
 			ClassLoader classLoader = getClass().getClassLoader();
 		       URL resource = classLoader.getResource(DEFAULT_AVATAR);
 			imgStream = new DataInputStream(new FileInputStream(resource.getFile()));

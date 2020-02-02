@@ -4,7 +4,7 @@
     <form [formGroup]="causeForm" (ngSubmit)="OnSubmit()">
       <div class="form-group">
         <label for="name">Име</label>
-        <input type="text" formControlName="name" class="form-control"
+        <input type="text" placeholder="Име на вашата кауза.." formControlName="name" class="form-control"
           [ngClass]="{ 'is-invalid': submitted && f.name.errors }" />
           <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
               <div *ngIf="f.name.errors">
@@ -14,8 +14,13 @@
       </div>
       <div class="form-group">
         <label for="location">Място</label>
-        <input type="text" formControlName="location" class="form-control"
+        <input type="text" placeholder="Локацията на вашата кауза.." formControlName="location" class="form-control" [matAutocomplete]="auto" 
           [ngClass]="{ 'is-invalid': submitted && f.location.errors }" />
+        <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let loc of filteredLocations | async" [value]="loc">
+              {{loc}}
+            </mat-option>
+        </mat-autocomplete>
         <div *ngIf="submitted && f.location.errors" class="invalid-feedback">
           <div *ngIf="f.location.errors.required">
             <font color="red">Локацията е задължителна</font>
@@ -24,9 +29,8 @@
       </div>
       <div class="form-group">
         <label for="description">Описание</label>
-        <textarea formControlName="description" class="form-control"
+        <textarea placeholder="Детайли за вашата кауза" formControlName="description" class="form-control"
           [ngClass]="{ 'is-invalid': submitted && f.description.errors }">
-          Въведете някакво описание..
         </textarea>
         <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
           <div *ngIf="f.description.errors.required">

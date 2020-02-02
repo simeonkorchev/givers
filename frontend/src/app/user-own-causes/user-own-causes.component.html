@@ -1,2 +1,40 @@
-<p>user-own-causes works!</p>
-<p *ngFor="let cause of ownCauses">{{ cause.name }}</p>
+<div class="page-content container">
+  <div class="float-left">
+      <nav class="menu" aria-label="Personal settings" data-pjax="">
+          <h3 class="menu-heading">
+              Настройки
+          </h3>
+          <a [routerLink]="['/user']" class="menu-item">Профил</a>
+          <a [routerLink]="['/user/security']" class="menu-item">Сигурност</a>
+          <a [routerLink]="['/user/my/causes']" class="menu-item selected">Създадени каузи</a>
+          <a [routerLink]="['/user/attend/causes']" class="menu-item">Каузите в които участвам</a>
+      </nav>
+  </div>
+</div>
+<div class="float-right">
+  <div class="Subhead">
+    <h2 class="Subhead-heading">Създадените от мен каузи</h2>
+  </div>
+  <section id="main-section">
+    <div class="container">
+      <span *ngFor="let entry of ownCauses">
+        <li class="prod-teaser">
+          <div class="prod-teaser-content">
+            <img [src]="getImage(entry)" width="270" height="246"/>
+            <h6 class="prod-teaser-content-title">{{ fitContent(entry.name) }}</h6>
+            <h6 class="prod-teaser-content-title"><fa-icon icon="calendar-alt"></fa-icon> {{ entry.time * 1000 | date:'dd-MM-yyyy'}}</h6>
+            <h6 class="prod-teaser-content-title"> <fa-icon icon="map-marked-alt"></fa-icon>  {{ fitContent(entry.location) }}</h6>
+            <h6 class="prod-teaser-content-title">Участници: {{ entry.participantIds?.length }}</h6>
+            <h6 class="prod-teaser-content-title">Коментари: {{ entry.commentIds?.length }}</h6>
+            <div>
+                <button disabled type="button" class="btn colors-btn" (click)="attendToCause(entry)"> <fa-icon icon="hand-holding-heart"></fa-icon> Участвай </button>
+            </div>
+            <div>
+              <button type="button" class="btn colors-btn" (click)="goToCommentDetails(entry)"> Виж повече </button>
+            </div>
+          </div>
+        </li>
+      </span>
+    </div>
+  </section>
+  </div>

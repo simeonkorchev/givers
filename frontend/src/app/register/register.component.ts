@@ -70,10 +70,6 @@ export class RegisterComponent implements OnInit {
     var photoPath: string;
     var honor = 0;
 
-    if(this.selectedFiles == undefined || this.selectedFiles.length == 0) {
-      photoPath = "./assets/avatar.jpg";
-    }
-
     var user = new User({
       id: null,
       username: username,

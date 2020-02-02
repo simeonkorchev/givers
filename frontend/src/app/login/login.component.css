@@ -26,3 +26,9 @@
     float: right;
     padding: 10px 15px;
 }
+
+.quote {
+    font-family: Impact;
+    text-align: center;
+    font-size: 50px;
+}

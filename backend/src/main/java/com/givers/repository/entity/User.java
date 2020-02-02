@@ -32,7 +32,7 @@ public class User implements Serializable {
     private String firstName;
     private String lastName;
     
-    @ValidPassword
+//    @ValidPassword
     private String password;
     private List<String> causes;
     private List<String> ownCauses;

@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,11 +26,11 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @Component
 public class TokenProvider {
-
-    private final Logger log = LoggerFactory.getLogger(TokenProvider.class);
 
     private static final String SALT_KEY = "JpxM4e858rc673syopdZnMFb*ExeqJtUc0HJ_iOxu~jiSYu+yPdPw93OBBjF";
     private static final String AUTHORITIES_KEY = "auth";
@@ -54,6 +52,7 @@ public class TokenProvider {
     }
 
     public String createToken(Authentication authentication) {
+    	log.info("Creating token..");
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));

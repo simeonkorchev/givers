@@ -60,7 +60,6 @@ export class CauseDetailsComponent implements OnInit  {
         })
       ).subscribe(causes => {
         this.cause = causes[0];
-        console.log(this.cause);
         this.collectorService.collect(localStorage.getItem('username'), this.cause.id, EventType.CAUSE_DETAILS_VIEWED, this.cause.name);
         this.cause.commentIds.forEach(id => {
           this.commentService.findById(id)
