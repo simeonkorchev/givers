@@ -87,8 +87,8 @@ export class CausesComponent implements OnInit {
 
   fitContent(name: string): string {
     var cut = "";
-    if(name.length > 35) {
-      cut = name.substring(0, 33);
+    if(name.length > 33) {
+      cut = name.substring(0, 31);
       cut += "..";
     } else {
       cut = name;

@@ -57,7 +57,7 @@ def _train_model(df):
   #global sparse_person_content
   sparse_person_content = sparse.csr_matrix((grouped_df['eventStrength'].astype(float), (grouped_df['username'], grouped_df['causeId'])))
   global model
-  model = implicit.als.AlternatingLeastSquares(factors=20, regularization=0.1, iterations=100)
+  model = implicit.als.AlternatingLeastSquares(factors=100, regularization=0.1, iterations=200, num_threads=8)
   alpha = 15
   data = (sparse_content_person * alpha).astype('double')
   model.fit(data)

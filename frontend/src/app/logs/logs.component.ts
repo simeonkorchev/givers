@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CollectorService } from '../collector.service';
 import { AlertService } from '../alert-service';
 import { Log } from '../log';
+import { AuthenticationService } from '../auth/auth';
 
 @Component({
   selector: 'app-logs',
@@ -16,6 +17,7 @@ export class LogsComponent implements OnInit {
   constructor(
     private collectorService: CollectorService,
     private alertService: AlertService,
+    private authService: AuthenticationService
   ) { }
 
   ngOnInit() {
@@ -27,4 +29,7 @@ export class LogsComponent implements OnInit {
       });
   }
 
+  logout() {
+    this.authService.logout()
+  }
 }

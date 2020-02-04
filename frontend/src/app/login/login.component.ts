@@ -35,11 +35,11 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.f.username.value, this.f.password.value)
       .then(
         data => {
-          this.alertService.success("Login successful!");
+          this.alertService.success("Успешно влезнахте в системата!");
           this.router.navigate(["/causes"]);
         },
       ).catch(error => {
-          this.alertService.error("Invalid credentials");
+          this.alertService.error("Невалидно потребителско име или парола");
           this.loading = false;
         }
       );
